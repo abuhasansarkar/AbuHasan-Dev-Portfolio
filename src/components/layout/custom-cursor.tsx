@@ -33,11 +33,15 @@ export function CustomCursor() {
 
     const ringX = gsap.quickTo(ring, "x", { duration: 0.28, ease: "power3.out" });
     const ringY = gsap.quickTo(ring, "y", { duration: 0.28, ease: "power3.out" });
+    let rafId: number | null = null;
 
     const onMove = (e: PointerEvent) => {
-      gsap.set(dot, { x: e.clientX, y: e.clientY });
-      ringX(e.clientX);
-      ringY(e.clientY);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        gsap.set(dot, { x: e.clientX, y: e.clientY });
+        ringX(e.clientX);
+        ringY(e.clientY);
+      });
     };
 
     const onOver = (e: PointerEvent) => {
@@ -59,6 +63,7 @@ export function CustomCursor() {
     document.documentElement.addEventListener("pointerenter", onEnter);
 
     return () => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
       document.documentElement.classList.remove("has-custom-cursor");
       window.removeEventListener("pointermove", onMove);
       document.removeEventListener("pointerover", onOver);

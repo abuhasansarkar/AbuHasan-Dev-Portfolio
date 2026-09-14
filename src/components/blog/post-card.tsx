@@ -22,7 +22,7 @@ export function PostCard({ post, onOpen, featured = false }: Props) {
         className={cn("relative block overflow-hidden rounded-2xl border border-border bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", featured ? "aspect-[16/10] lg:col-span-7" : "aspect-[16/10]")}
       >
         {post.coverImage && !imgError ? (
-          <Image src={post.coverImage} alt="" fill sizes={featured ? "(min-width: 1024px) 58vw, 100vw" : "(min-width: 1024px) 30vw, (min-width: 640px) 50vw, 100vw"} className="object-cover transition-transform duration-[1200ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.04]" onError={() => setImgError(true)} />
+          <Image src={post.coverImage} alt="" fill sizes={featured ? "(min-width: 1024px) 58vw, 100vw" : "(min-width: 1024px) 30vw, (min-width: 640px) 50vw, 100vw"} className="object-cover transition-transform duration-700 ease-[var(--ease-standard)] group-hover:scale-[1.03]" onError={() => setImgError(true)} />
         ) : (
           <div className="flex size-full items-center justify-center bg-gradient-to-br from-secondary to-background">
             <span className="font-display text-6xl font-semibold text-foreground/10">{post.category.name.slice(0, 1)}</span>

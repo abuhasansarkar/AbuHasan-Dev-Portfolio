@@ -50,10 +50,9 @@ export function TextReveal({ text, as: Tag = "h2", className, highlight = [], mu
       gsap.set(el, { autoAlpha: 1 });
       gsap.fromTo(
         words,
-        { yPercent: 110, rotate: 2 },
+        { yPercent: 110 },
         {
           yPercent: 0,
-          rotate: 0,
           duration: 1.1,
           ease: "expo.out",
           stagger,

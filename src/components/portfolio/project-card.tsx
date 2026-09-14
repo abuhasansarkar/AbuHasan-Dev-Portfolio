@@ -50,9 +50,9 @@ export function ProjectCard({ project, index, wide, onOpen }: ProjectCardProps) 
         aria-label={`Open case study: ${project.title}`}
         className="relative block w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-2xl"
       >
-        <div className="relative overflow-hidden rounded-2xl border border-border bg-secondary/40 p-3 transition-[transform,border-color] duration-500 ease-[var(--ease-out-expo)] [transform:rotateX(var(--rx,0deg))_rotateY(var(--ry,0deg))] group-hover:border-foreground/25 sm:p-5 lg:p-7">
-          <div className="absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100" style={{ background: `radial-gradient(800px circle at 30% 0%, ${project.accentColor ?? "hsl(var(--accent))"}22, transparent 45%)` }} aria-hidden />
-          <BrowserFrame url={project.projectUrl || `${project.slug}.com`} accent={project.accentColor} className="translate-y-2 transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:translate-y-0">
+        <div className="relative overflow-hidden rounded-2xl border border-border bg-secondary/40 p-3 transition-[transform,border-color] duration-300 ease-[var(--ease-standard)] [transform:rotateX(var(--rx,0deg))_rotateY(var(--ry,0deg))] group-hover:border-foreground/20 sm:p-5 lg:p-7">
+          <div className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" style={{ background: `radial-gradient(800px circle at 30% 0%, ${project.accentColor ?? "hsl(var(--accent))"}22, transparent 45%)` }} aria-hidden />
+          <BrowserFrame url={project.projectUrl || `${project.slug}.com`} accent={project.accentColor} className="translate-y-2 transition-transform duration-500 ease-[var(--ease-standard)] group-hover:translate-y-0">
             <div className={cn("relative w-full overflow-hidden bg-background", wide ? "aspect-[16/10]" : "aspect-[4/3]")}>
               {imgError ? (
                 <div className="flex size-full items-center justify-center text-xs text-muted-foreground">Preview unavailable</div>
@@ -62,14 +62,14 @@ export function ProjectCard({ project, index, wide, onOpen }: ProjectCardProps) 
                   alt={`${project.title} website preview`}
                   fill
                   sizes={wide ? "(min-width: 1024px) 58vw, 100vw" : "(min-width: 1024px) 42vw, 100vw"}
-                  className="object-cover object-top transition-transform duration-[1200ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.04]"
+                  className="object-cover object-top transition-transform duration-700 ease-[var(--ease-standard)] group-hover:scale-[1.03]"
                   priority={index < 2}
                   onError={() => setImgError(true)}
                 />
               )}
             </div>
           </BrowserFrame>
-          <span className="absolute right-5 top-5 flex size-11 translate-y-2 items-center justify-center rounded-full bg-foreground text-background opacity-0 transition-all duration-500 ease-[var(--ease-out-expo)] group-hover:translate-y-0 group-hover:opacity-100 lg:right-8 lg:top-8" aria-hidden>
+          <span className="absolute right-5 top-5 flex size-11 translate-y-2 items-center justify-center rounded-full bg-foreground text-background opacity-0 transition-all duration-300 ease-[var(--ease-standard)] group-hover:translate-y-0 group-hover:opacity-100 lg:right-8 lg:top-8" aria-hidden>
             <ArrowUpRight className="size-5" />
           </span>
         </div>

@@ -24,15 +24,19 @@ export function Magnetic({ children, className, strength = 0.35 }: MagneticProps
     const el = ref.current;
     if (!el || !fine || reduced) return;
 
-    const xTo = gsap.quickTo(el, "x", { duration: 0.6, ease: "elastic.out(1, 0.4)" });
-    const yTo = gsap.quickTo(el, "y", { duration: 0.6, ease: "elastic.out(1, 0.4)" });
+    const xTo = gsap.quickTo(el, "x", { duration: 0.4, ease: "power3.out" });
+    const yTo = gsap.quickTo(el, "y", { duration: 0.4, ease: "power3.out" });
 
     const move = (e: PointerEvent) => {
       const rect = el.getBoundingClientRect();
       const dx = e.clientX - (rect.left + rect.width / 2);
       const dy = e.clientY - (rect.top + rect.height / 2);
-      xTo(dx * strength);
-      yTo(dy * strength);
+      // Cap displacement to prevent extreme movement
+      const maxDist = 40;
+      const cappedX = Math.max(-maxDist, Math.min(maxDist, dx * strength));
+      const cappedY = Math.max(-maxDist, Math.min(maxDist, dy * strength));
+      xTo(cappedX);
+      yTo(cappedY);
     };
     const leave = () => {
       xTo(0);

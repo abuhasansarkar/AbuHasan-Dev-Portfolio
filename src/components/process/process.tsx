@@ -89,9 +89,9 @@ export function Process() {
 
 function StepCard({ step, index, className = "" }: { step: (typeof processSteps)[number]; index: number; className?: string }) {
   return (
-    <article className={`group relative flex shrink-0 flex-col rounded-2xl border border-border bg-card p-7 transition-colors duration-500 hover:border-foreground/25 md:p-9 ${className}`}>
+    <article className={`group relative flex shrink-0 flex-col rounded-2xl border border-border bg-card p-7 transition-colors duration-300 ease-[var(--ease-standard)] hover:border-foreground/25 md:p-9 ${className}`}>
       <div className="flex items-center justify-between">
-        <span className="font-display text-5xl font-semibold tracking-[-0.04em] text-foreground/15 transition-colors duration-500 group-hover:text-accent md:text-6xl">{String(index + 1).padStart(2, "0")}</span>
+        <span className="font-display text-5xl font-semibold tracking-[-0.04em] text-foreground/15 transition-colors duration-300 group-hover:text-accent md:text-6xl">{String(index + 1).padStart(2, "0")}</span>
         <span className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">Step {index + 1} of {processSteps.length}</span>
       </div>
       <h3 className="mt-8 font-display text-2xl font-semibold tracking-tight md:text-3xl">{step.title}</h3>

@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Magnetic } from "@/components/animations/magnetic";
 import { ThemeToggle } from "./theme-toggle";
 
 type MobileMenuProps = {
@@ -14,13 +15,9 @@ type MobileMenuProps = {
   activeHref: string;
 };
 
-const overlay = {
-  hidden: { clipPath: "inset(0 0 100% 0)" },
-  visible: { clipPath: "inset(0 0 0% 0)", transition: { duration: 0.6, ease: [0.76, 0, 0.24, 1] as const } },
-  exit: { clipPath: "inset(0 0 100% 0)", transition: { duration: 0.5, ease: [0.76, 0, 0.24, 1] as const, delay: 0.1 } },
-};
+const instant = { duration: 0 };
 
-const list = { visible: { transition: { staggerChildren: 0.06, delayChildren: 0.25 } }, exit: { transition: { staggerChildren: 0.03, staggerDirection: -1 } } };
+const LIST_ANIM = { visible: { transition: { staggerChildren: 0.06, delayChildren: 0.25 } }, exit: { transition: { staggerChildren: 0.03, staggerDirection: -1 } } };
 const item = {
   hidden: { y: 40, opacity: 0 },
   visible: { y: 0, opacity: 1, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const } },
@@ -28,6 +25,16 @@ const item = {
 };
 
 export function MobileMenu({ open, onClose, links, ctaLabel, activeHref }: MobileMenuProps) {
+  // clip-path is not a transform, so MotionConfig's reduced-motion handling skips it — collapse manually.
+  const reduced = !!useReducedMotion();
+  const overlay = reduced
+    ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: instant }, exit: { opacity: 0, transition: instant } }
+    : {
+        hidden: { clipPath: "inset(0 0 100% 0)" },
+        visible: { clipPath: "inset(0 0 0% 0)", transition: { duration: 0.6, ease: [0.76, 0, 0.24, 1] as const } },
+        exit: { clipPath: "inset(0 0 100% 0)", transition: { duration: 0.5, ease: [0.76, 0, 0.24, 1] as const, delay: 0.1 } },
+      };
+  const list = reduced ? { visible: { transition: instant }, exit: { transition: instant } } : LIST_ANIM;
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
@@ -75,11 +82,13 @@ export function MobileMenu({ open, onClose, links, ctaLabel, activeHref }: Mobil
             </motion.nav>
 
             <motion.div variants={item} initial="hidden" animate="visible" exit="exit" className="flex items-center justify-between gap-4 pt-10">
-              <Button asChild variant="accent" size="lg" className="flex-1">
-                <a href="#contact" onClick={onClose}>
-                  {ctaLabel}
-                </a>
-              </Button>
+              <Magnetic strength={0.2} className="flex-1">
+                <Button asChild variant="accent" size="lg" className="w-full" data-cursor="cta">
+                  <a href="#contact" onClick={onClose}>
+                    {ctaLabel}
+                  </a>
+                </Button>
+              </Magnetic>
               <ThemeToggle className="size-13 border border-border" />
             </motion.div>
           </div>

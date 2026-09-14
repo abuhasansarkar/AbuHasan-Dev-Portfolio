@@ -9,7 +9,7 @@ import { useIsomorphicLayoutEffect } from "./use-isomorphic-layout-effect";
  * Returns a ref to attach to the scope element; selectors inside `callback` are scoped to it.
  */
 export function useGsap<T extends HTMLElement = HTMLDivElement>(
-  callback: (ctx: gsap.Context, scope: T) => void,
+  callback: (ctx: gsap.Context, scope: T) => void | (() => void),
   deps: DependencyList = [],
 ): RefObject<T | null> {
   const scope = useRef<T>(null);
@@ -17,8 +17,14 @@ export function useGsap<T extends HTMLElement = HTMLDivElement>(
   useIsomorphicLayoutEffect(() => {
     const el = scope.current;
     if (!el) return;
-    const ctx = gsap.context((self) => callback(self, el), el);
-    return () => ctx.revert();
+    let cleanup: (() => void) | void;
+    const ctx = gsap.context((self) => {
+      cleanup = callback(self, el);
+    }, el);
+    return () => {
+      cleanup?.();
+      ctx.revert();
+    };
   }, deps);
 
   return scope;

@@ -6,6 +6,7 @@ import { ArrowUpRight, ExternalLink } from "lucide-react";
 import type { ProjectWithImages } from "@/lib/data/projects";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { Parallax } from "@/components/animations/parallax";
 import { BrowserFrame } from "./browser-frame";
 
 type ProjectCardProps = {
@@ -57,6 +58,7 @@ export function ProjectCard({ project, index, wide, onOpen }: ProjectCardProps) 
               {imgError ? (
                 <div className="flex size-full items-center justify-center text-xs text-muted-foreground">Preview unavailable</div>
               ) : (
+                <Parallax className="absolute inset-x-0 top-[-7%] h-[114%] w-full" strength={16} as="div">
                 <Image
                   src={project.coverImage}
                   alt={`${project.title} website preview`}
@@ -66,6 +68,7 @@ export function ProjectCard({ project, index, wide, onOpen }: ProjectCardProps) 
                   priority={index < 2}
                   onError={() => setImgError(true)}
                 />
+                </Parallax>
               )}
             </div>
           </BrowserFrame>

@@ -129,8 +129,10 @@ export function ContactForm({ contact }: { contact: SiteSettings["contact"] }) {
 
 function Field({ label, name, error, hint, children }: { label: string; name: string; error?: string; hint?: string; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-2">
-      <Label htmlFor={name}>{label}</Label>
+    <div className="group/field flex flex-col gap-2">
+      <Label htmlFor={name} className="transition-colors group-focus-within/field:text-accent">
+        {label}
+      </Label>
       {children}
       {error ? (
         <p id={`${name}-error`} className="text-xs text-destructive" role="alert">

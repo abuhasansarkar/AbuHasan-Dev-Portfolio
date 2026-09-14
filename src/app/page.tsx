@@ -1,6 +1,7 @@
 import { About } from "@/components/about/about";
 import { SkillsMarquee } from "@/components/about/skills-marquee";
 import { Stats } from "@/components/about/stats";
+import { ScrollProgress } from "@/components/animations/scroll-progress";
 import { Why } from "@/components/about/why";
 import { Blog } from "@/components/blog/blog";
 import { Contact } from "@/components/contact/contact";
@@ -38,6 +39,7 @@ export default async function HomePage() {
         Skip to content
       </a>
       <Navbar ctaLabel={settings.cta.navLabel} name={settings.profile.name} />
+      <ScrollProgress />
       <main id="main" className="flex-1">
         <Hero hero={settings.hero} availability={settings.profile.availability} />
         <SkillsMarquee items={settings.about.focusAreas} />

@@ -1,3 +1,4 @@
+import { Parallax } from "@/components/animations/parallax";
 import { Reveal } from "@/components/animations/reveal";
 import { Section } from "@/components/layout/section";
 import { SectionHeading } from "@/components/layout/section-heading";
@@ -39,7 +40,9 @@ export function Expertise({ name }: { name: string }) {
           {/* Desktop: orbit */}
           <div className="col-span-12 hidden lg:col-span-7 lg:block [container-type:inline-size]">
             <Reveal scale={0.94} duration={1.4}>
-              <TechOrbit name={name} />
+              <Parallax strength={12}>
+                <TechOrbit name={name} />
+              </Parallax>
             </Reveal>
           </div>
         </div>

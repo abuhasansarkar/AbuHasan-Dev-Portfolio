@@ -1,20 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
-/** Returns `undefined` until mounted so SSR and first client render match. */
-export function useMediaQuery(query: string): boolean | undefined {
-  const [matches, setMatches] = useState<boolean | undefined>(undefined);
-
-  useEffect(() => {
-    const media = window.matchMedia(query);
-    const update = () => setMatches(media.matches);
-    update();
-    media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
-  }, [query]);
-
-  return matches;
+/** Synchronously checks media query on client and safely defaults on server. */
+export function useMediaQuery(query: string): boolean {
+  return useSyncExternalStore(
+    (onStoreChange) => {
+      if (typeof window === "undefined") return () => {};
+      const media = window.matchMedia(query);
+      media.addEventListener("change", onStoreChange);
+      return () => media.removeEventListener("change", onStoreChange);
+    },
+    () => (typeof window !== "undefined" ? window.matchMedia(query).matches : false),
+    () => false,
+  );
 }
 
 export const useIsMobile = () => useMediaQuery("(max-width: 767px)");

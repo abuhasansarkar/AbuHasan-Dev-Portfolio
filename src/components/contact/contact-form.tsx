@@ -1,13 +1,11 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState } from "react";
-import { ArrowRight, CheckCircle2, Loader2, RotateCcw, TriangleAlert } from "lucide-react";
+import { ArrowUpRight, CheckCircle2, Loader2, RotateCcw, TriangleAlert, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import { submitContact, type ContactState } from "@/app/actions/contact";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Magnetic } from "@/components/animations/magnetic";
 import { contactFormSchema, fieldErrorsFromZod, type ContactFieldErrors } from "@/lib/validation/contact";
@@ -16,6 +14,16 @@ import { cn } from "@/lib/utils";
 
 const initial: ContactState = { status: "idle" };
 
+const defaultServices = [
+  "Full-Stack Web Development",
+  "WordPress & WooCommerce Development",
+  "Next.js & React Application",
+  "Landing Page & UI/UX Design",
+  "Speed & Core Web Vitals Optimization",
+  "Custom API & Integration",
+  "Technical Consultation",
+];
+
 export function ContactForm({ contact }: { contact: SiteSettings["contact"] }) {
   const [state, action, pending] = useActionState(submitContact, initial);
   const [clientErrors, setClientErrors] = useState<ContactFieldErrors>({});
@@ -23,11 +31,13 @@ export function ContactForm({ contact }: { contact: SiteSettings["contact"] }) {
   const formRef = useRef<HTMLFormElement>(null);
   const errors = { ...clientErrors, ...(state.errors ?? {}) };
 
+  const services = contact.projectTypes?.length ? contact.projectTypes : defaultServices;
+
   useEffect(() => {
     if (state.status === "success") {
       setSubmitted(true);
       formRef.current?.reset();
-      toast.success("Message sent", { description: state.message });
+      toast.success("Message sent successfully", { description: state.message });
     } else if (state.status === "error" && !state.errors) {
       toast.error("Could not send", { description: state.message });
     }
@@ -49,100 +59,154 @@ export function ContactForm({ contact }: { contact: SiteSettings["contact"] }) {
 
   if (submitted && state.status === "success") {
     return (
-      <div className="flex min-h-[420px] flex-col items-center justify-center rounded-2xl border border-success/30 bg-success/5 p-10 text-center" role="status">
-        <CheckCircle2 className="size-12 text-success" aria-hidden />
-        <p className="mt-6 font-display text-2xl font-semibold tracking-tight">Message received</p>
-        <p className="mt-3 max-w-sm text-muted-foreground">{state.message}</p>
-        <Button type="button" variant="outline" className="mt-8" onClick={() => setSubmitted(false)}>
-          <RotateCcw aria-hidden />
+      <div className="flex min-h-[380px] flex-col items-center justify-center rounded-2xl border border-success/30 bg-success/5 p-8 text-center" role="status">
+        <div className="flex size-14 items-center justify-center rounded-full bg-success/10 text-success">
+          <CheckCircle2 className="size-8" aria-hidden />
+        </div>
+        <p className="mt-5 font-display text-2xl font-bold tracking-tight">Message Received!</p>
+        <p className="mt-2 max-w-sm text-sm text-muted-foreground">{state.message}</p>
+        <button
+          type="button"
+          className="mt-6 inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-medium text-foreground shadow-sm transition hover:bg-secondary"
+          onClick={() => setSubmitted(false)}
+        >
+          <RotateCcw className="size-4" aria-hidden />
           Send another message
-        </Button>
+        </button>
       </div>
     );
   }
 
   return (
-    <form ref={formRef} action={action} onSubmit={validateClient} noValidate className="flex flex-col gap-6" aria-describedby={state.status === "error" && !state.errors ? "form-error" : undefined}>
+    <form ref={formRef} action={action} onSubmit={validateClient} noValidate className="flex flex-col gap-5" aria-describedby={state.status === "error" && !state.errors ? "form-error" : undefined}>
       {/* Honeypot */}
       <div className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden" aria-hidden>
         <label htmlFor="website">Website</label>
         <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-2">
-        <Field label="Name" name="name" error={errors.name}>
-          <Input id="name" name="name" autoComplete="name" placeholder="Your name" required aria-invalid={Boolean(errors.name)} aria-describedby={errors.name ? "name-error" : undefined} />
+      {/* Full Name */}
+      <Field label="Full Name *" name="name" error={errors.name}>
+        <Input
+          id="name"
+          name="name"
+          autoComplete="name"
+          placeholder="enter your full name"
+          required
+          aria-invalid={Boolean(errors.name)}
+          aria-describedby={errors.name ? "name-error" : undefined}
+          className="h-12 rounded-xl bg-secondary/60 px-4 text-sm placeholder:text-muted-foreground/70 border-border/50 focus-visible:bg-background"
+        />
+      </Field>
+
+      {/* Email */}
+      <Field label="Email *" name="email" error={errors.email}>
+        <Input
+          id="email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          placeholder="enter your email address"
+          required
+          aria-invalid={Boolean(errors.email)}
+          aria-describedby={errors.email ? "email-error" : undefined}
+          className="h-12 rounded-xl bg-secondary/60 px-4 text-sm placeholder:text-muted-foreground/70 border-border/50 focus-visible:bg-background"
+        />
+      </Field>
+
+      {/* Row: Company Name & Service Required */}
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field label="Company name (optional)" name="company" error={errors.company}>
+          <Input
+            id="company"
+            name="company"
+            placeholder="Ex. Google, Inc"
+            className="h-12 rounded-xl bg-secondary/60 px-4 text-sm placeholder:text-muted-foreground/70 border-border/50 focus-visible:bg-background"
+          />
         </Field>
-        <Field label="Email" name="email" error={errors.email}>
-          <Input id="email" name="email" type="email" autoComplete="email" placeholder="you@company.com" required aria-invalid={Boolean(errors.email)} aria-describedby={errors.email ? "email-error" : undefined} />
-        </Field>
-        <Field label="Project type" name="projectType" error={errors.projectType}>
-          <Select id="projectType" name="projectType" defaultValue="" required aria-invalid={Boolean(errors.projectType)} aria-describedby={errors.projectType ? "projectType-error" : undefined}>
-            <option value="" disabled>
-              Choose one
-            </option>
-            {contact.projectTypes.map((t) => (
-              <option key={t} value={t}>
-                {t}
+
+        <Field label="Service required *" name="projectType" error={errors.projectType}>
+          <div className="relative">
+            <select
+              id="projectType"
+              name="projectType"
+              defaultValue=""
+              required
+              aria-invalid={Boolean(errors.projectType)}
+              aria-describedby={errors.projectType ? "projectType-error" : undefined}
+              className="h-12 w-full appearance-none rounded-xl border border-border/50 bg-secondary/60 px-4 pr-10 text-sm text-foreground focus-visible:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors"
+            >
+              <option value="" disabled className="text-muted-foreground">
+                choose your service name
               </option>
-            ))}
-          </Select>
-        </Field>
-        <Field label="Budget range" name="budget" error={errors.budget}>
-          <Select id="budget" name="budget" defaultValue="" required aria-invalid={Boolean(errors.budget)} aria-describedby={errors.budget ? "budget-error" : undefined}>
-            <option value="" disabled>
-              Choose one
-            </option>
-            {contact.budgetRanges.map((b) => (
-              <option key={b} value={b}>
-                {b}
-              </option>
-            ))}
-          </Select>
+              {services.map((item) => (
+                <option key={item} value={item} className="bg-background text-foreground py-1">
+                  {item}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" aria-hidden />
+          </div>
         </Field>
       </div>
 
-      <Field label="Project description" name="message" error={errors.message} hint="What are you building, fixing or improving? Links welcome.">
-        <Textarea id="message" name="message" rows={6} placeholder="Tell me about the project, the goal and the timeline." required aria-invalid={Boolean(errors.message)} aria-describedby={errors.message ? "message-error" : "message-hint"} />
+      {/* Project Details */}
+      <Field label="Project details *" name="message" error={errors.message}>
+        <Textarea
+          id="message"
+          name="message"
+          rows={4}
+          placeholder="Tell us more about your project..."
+          required
+          aria-invalid={Boolean(errors.message)}
+          aria-describedby={errors.message ? "message-error" : undefined}
+          className="min-h-[110px] resize-y rounded-xl bg-secondary/60 p-4 text-sm placeholder:text-muted-foreground/70 border-border/50 focus-visible:bg-background"
+        />
       </Field>
 
       {state.status === "error" && !state.errors && (
-        <p id="form-error" role="alert" className="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
+        <p id="form-error" role="alert" className="flex items-start gap-2 rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
           <TriangleAlert className="mt-0.5 size-4 shrink-0" aria-hidden />
           {state.message}
         </p>
       )}
 
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <Magnetic>
-          <Button type="submit" size="lg" variant="accent" disabled={pending} data-cursor="cta" className="min-w-56">
-            {pending ? <Loader2 className="animate-spin" aria-hidden /> : null}
-            {pending ? "Sending…" : contact.buttonLabel}
-            {!pending && <ArrowRight className="transition-transform duration-300 group-hover/btn:translate-x-1" aria-hidden />}
-          </Button>
+      {/* Submit Button */}
+      <div className="flex items-center justify-end pt-2">
+        <Magnetic strength={0.3}>
+          <button
+            type="submit"
+            disabled={pending}
+            data-cursor="cta"
+            className="group/btn inline-flex items-center gap-3 rounded-full border border-border/80 bg-background/90 py-2 pl-2 pr-6 text-sm font-semibold text-foreground shadow-md transition-all hover:bg-background hover:shadow-lg disabled:opacity-60"
+          >
+            <span className="flex size-10 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-sm transition-transform duration-300 group-hover/btn:scale-110 group-hover/btn:rotate-12">
+              {pending ? (
+                <Loader2 className="size-4 animate-spin" aria-hidden />
+              ) : (
+                <ArrowUpRight className="size-4 stroke-[2.5]" aria-hidden />
+              )}
+            </span>
+            <span>{pending ? "Sending..." : "Submit Us"}</span>
+          </button>
         </Magnetic>
-        {contact.responseTime && <p className="text-sm text-muted-foreground">{contact.responseTime}</p>}
       </div>
     </form>
   );
 }
 
-function Field({ label, name, error, hint, children }: { label: string; name: string; error?: string; hint?: string; children: React.ReactNode }) {
+function Field({ label, name, error, children }: { label: string; name: string; error?: string; children: React.ReactNode }) {
   return (
-    <div className="group/field flex flex-col gap-2">
-      <Label htmlFor={name} className="transition-colors group-focus-within/field:text-accent">
+    <div className="group/field flex flex-col gap-1.5">
+      <Label htmlFor={name} className="text-xs font-semibold text-foreground/85">
         {label}
       </Label>
       {children}
-      {error ? (
+      {error && (
         <p id={`${name}-error`} className="text-xs text-destructive" role="alert">
           {error}
         </p>
-      ) : hint ? (
-        <p id={`${name}-hint`} className={cn("text-xs text-muted-foreground")}>
-          {hint}
-        </p>
-      ) : null}
+      )}
     </div>
   );
 }

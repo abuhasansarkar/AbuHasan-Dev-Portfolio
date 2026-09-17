@@ -55,7 +55,7 @@ export default async function HomePage() {
         <Blog posts={posts.data} categories={categories.data} error={posts.error || categories.error} />
         <Faq />
         <CtaBanner cta={settings.cta} />
-        <Contact contact={settings.contact} social={settings.social} availability={settings.profile.availability} />
+        <Contact contact={settings.contact} social={settings.social} availability={settings.profile.availability} profile={settings.profile} />
       </main>
       <Footer profile={settings.profile} social={settings.social} />
       <CustomCursor />

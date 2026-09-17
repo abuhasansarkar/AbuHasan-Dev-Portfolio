@@ -21,7 +21,6 @@ export function Hero({ hero, availability }: HeroProps) {
 
   const scope = useGsap<HTMLElement>(
     (_, el) => {
-      if (reduced === undefined) return;
       const q = gsap.utils.selector(el);
       const targets = q("[data-reveal]");
 

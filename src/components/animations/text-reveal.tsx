@@ -37,7 +37,7 @@ export function TextReveal({ text, as: Tag = "h2", className, highlight = [], mu
 
   useIsomorphicLayoutEffect(() => {
     const el = ref.current;
-    if (!el || reduced === undefined) return;
+    if (!el) return;
     const words = el.querySelectorAll<HTMLElement>("[data-word]");
 
     if (reduced) {

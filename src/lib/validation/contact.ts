@@ -3,9 +3,10 @@ import { z } from "zod";
 export const contactFormSchema = z.object({
   name: z.string().trim().min(2, "Please enter your name").max(80, "Name is too long"),
   email: z.string().trim().email("Please enter a valid email address").max(160),
-  projectType: z.string().trim().min(1, "Please choose a project type").max(80),
-  budget: z.string().trim().min(1, "Please choose a budget range").max(80),
-  message: z.string().trim().min(20, "Tell me a little more (at least 20 characters)").max(3000, "Please keep it under 3000 characters"),
+  company: z.string().trim().max(120, "Company name is too long").optional().or(z.literal("")),
+  projectType: z.string().trim().min(1, "Please choose a service").max(80),
+  budget: z.string().trim().max(80).optional().default("Flexible / Discussion"),
+  message: z.string().trim().min(10, "Please tell us a little more about your project (at least 10 characters)").max(3000, "Please keep it under 3000 characters"),
   /** Honeypot: must stay empty. Hidden from humans. */
   website: z.string().max(0).optional().or(z.literal("")),
 });

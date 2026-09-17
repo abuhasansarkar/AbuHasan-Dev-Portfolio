@@ -15,8 +15,9 @@ export async function submitContact(_prev: ContactState, formData: FormData): Pr
   const raw = {
     name: String(formData.get("name") ?? ""),
     email: String(formData.get("email") ?? ""),
-    projectType: String(formData.get("projectType") ?? ""),
-    budget: String(formData.get("budget") ?? ""),
+    company: String(formData.get("company") ?? ""),
+    projectType: String(formData.get("projectType") || formData.get("service") || ""),
+    budget: String(formData.get("budget") || "Flexible / Discussion"),
     message: String(formData.get("message") ?? ""),
     website: String(formData.get("website") ?? ""),
   };
@@ -37,13 +38,17 @@ export async function submitContact(_prev: ContactState, formData: FormData): Pr
   }
 
   try {
+    const formattedMessage = parsed.data.company
+      ? `[Company / Organization: ${parsed.data.company}]\n\n${parsed.data.message}`
+      : parsed.data.message;
+
     await prisma.contactSubmission.create({
       data: {
         name: parsed.data.name,
         email: parsed.data.email.toLowerCase(),
         projectType: parsed.data.projectType,
-        budget: parsed.data.budget,
-        message: parsed.data.message,
+        budget: parsed.data.budget ?? "Flexible / Discussion",
+        message: formattedMessage,
         userAgent: h.get("user-agent")?.slice(0, 255) ?? null,
       },
     });

@@ -29,7 +29,7 @@ export function Reveal({ children, className, as: Tag = "div", delay = 0, y = 32
 
   useIsomorphicLayoutEffect(() => {
     const el = ref.current;
-    if (!el || reduced === undefined) return;
+    if (!el) return;
 
     if (reduced) {
       gsap.set(stagger !== undefined ? [el, ...Array.from(el.children)] : el, { autoAlpha: 1, clearProps: "transform" });

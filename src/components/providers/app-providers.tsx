@@ -4,13 +4,16 @@ import { MotionConfig } from "framer-motion";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "./theme-provider";
 import { ImageKitProvider } from "./imagekit-provider";
+import { SmoothScrollProvider } from "./smooth-scroll-provider";
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider>
       <ImageKitProvider>
-        {/* Honor prefers-reduced-motion for all framer-motion transform/layout animations */}
-        <MotionConfig reducedMotion="user">{children}</MotionConfig>
+        <SmoothScrollProvider>
+          {/* Honor prefers-reduced-motion for all framer-motion transform/layout animations */}
+          <MotionConfig reducedMotion="user">{children}</MotionConfig>
+        </SmoothScrollProvider>
       </ImageKitProvider>
       <Toaster
         position="bottom-right"
@@ -24,3 +27,4 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
     </ThemeProvider>
   );
 }
+

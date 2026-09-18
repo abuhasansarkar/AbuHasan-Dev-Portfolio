@@ -95,7 +95,7 @@ export function ContactForm({ contact }: { contact: SiteSettings["contact"] }) {
           required
           aria-invalid={Boolean(errors.name)}
           aria-describedby={errors.name ? "name-error" : undefined}
-          className="h-12 rounded-xl bg-secondary/60 px-4 text-sm placeholder:text-muted-foreground/70 border-border/50 focus-visible:bg-background"
+          className="h-12 rounded-xl bg-secondary/60 px-4 text-sm placeholder:text-muted-foreground/70 border-border/50 focus-visible:bg-background focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.15)]"
         />
       </Field>
 
@@ -110,7 +110,7 @@ export function ContactForm({ contact }: { contact: SiteSettings["contact"] }) {
           required
           aria-invalid={Boolean(errors.email)}
           aria-describedby={errors.email ? "email-error" : undefined}
-          className="h-12 rounded-xl bg-secondary/60 px-4 text-sm placeholder:text-muted-foreground/70 border-border/50 focus-visible:bg-background"
+          className="h-12 rounded-xl bg-secondary/60 px-4 text-sm placeholder:text-muted-foreground/70 border-border/50 focus-visible:bg-background focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.15)]"
         />
       </Field>
 
@@ -121,7 +121,7 @@ export function ContactForm({ contact }: { contact: SiteSettings["contact"] }) {
             id="company"
             name="company"
             placeholder="Ex. Google, Inc"
-            className="h-12 rounded-xl bg-secondary/60 px-4 text-sm placeholder:text-muted-foreground/70 border-border/50 focus-visible:bg-background"
+            className="h-12 rounded-xl bg-secondary/60 px-4 text-sm placeholder:text-muted-foreground/70 border-border/50 focus-visible:bg-background focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.15)]"
           />
         </Field>
 
@@ -134,7 +134,7 @@ export function ContactForm({ contact }: { contact: SiteSettings["contact"] }) {
               required
               aria-invalid={Boolean(errors.projectType)}
               aria-describedby={errors.projectType ? "projectType-error" : undefined}
-              className="h-12 w-full appearance-none rounded-xl border border-border/50 bg-secondary/60 px-4 pr-10 text-sm text-foreground focus-visible:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors"
+              className="h-12 w-full appearance-none rounded-xl border border-border/50 bg-secondary/60 px-4 pr-10 text-sm text-foreground focus-visible:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.15)] transition-colors"
             >
               <option value="" disabled className="text-muted-foreground">
                 choose your service name
@@ -160,7 +160,7 @@ export function ContactForm({ contact }: { contact: SiteSettings["contact"] }) {
           required
           aria-invalid={Boolean(errors.message)}
           aria-describedby={errors.message ? "message-error" : undefined}
-          className="min-h-[110px] resize-y rounded-xl bg-secondary/60 p-4 text-sm placeholder:text-muted-foreground/70 border-border/50 focus-visible:bg-background"
+          className="min-h-[110px] resize-y rounded-xl bg-secondary/60 p-4 text-sm placeholder:text-muted-foreground/70 border-border/50 focus-visible:bg-background focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.15)]"
         />
       </Field>
 
@@ -178,7 +178,7 @@ export function ContactForm({ contact }: { contact: SiteSettings["contact"] }) {
             type="submit"
             disabled={pending}
             data-cursor="cta"
-            className="group/btn inline-flex items-center gap-3 rounded-full border border-border/80 bg-background/90 py-2 pl-2 pr-6 text-sm font-semibold text-foreground shadow-md transition-all hover:bg-background hover:shadow-lg disabled:opacity-60"
+            className="group/btn inline-flex items-center gap-3 rounded-full border border-border/80 bg-background/90 py-2 pl-2 pr-6 text-sm font-semibold text-foreground shadow-md transition-all duration-300 hover:bg-background hover:shadow-lg hover:scale-[1.03] hover:border-accent/40 disabled:opacity-60"
           >
             <span className="flex size-10 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-sm transition-transform duration-300 group-hover/btn:scale-110 group-hover/btn:rotate-12">
               {pending ? (

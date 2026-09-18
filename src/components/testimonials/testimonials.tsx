@@ -67,7 +67,7 @@ export function Testimonials({ testimonials, error }: { testimonials: Testimonia
             ) : (
               <Reveal>
                 <div
-                  className="relative overflow-hidden rounded-2xl border border-border bg-card p-8 md:p-12 grain"
+                  className="relative overflow-hidden rounded-2xl border border-border/60 bg-card/80 backdrop-blur-sm p-8 md:p-12 grain shadow-[0_8px_40px_-12px_hsl(var(--accent)/0.08)]"
                   onPointerEnter={() => setPaused(true)}
                   onPointerLeave={() => setPaused(false)}
                   onFocusCapture={() => setPaused(true)}
@@ -77,7 +77,7 @@ export function Testimonials({ testimonials, error }: { testimonials: Testimonia
                   aria-label="Testimonials"
                   aria-live="polite"
                 >
-                  <Quote className="absolute right-8 top-8 size-16 text-foreground/[0.06]" aria-hidden />
+                  <Quote className="absolute right-8 top-8 size-16 text-accent/[0.08] transition-opacity duration-700" aria-hidden />
                   <motion.div
                     drag={count > 1 ? "x" : false}
                     dragConstraints={{ left: 0, right: 0 }}
@@ -133,7 +133,7 @@ export function Testimonials({ testimonials, error }: { testimonials: Testimonia
                           aria-selected={i === index}
                           aria-label={`Testimonial ${i + 1}`}
                           onClick={() => go(i, i > index ? 1 : -1)}
-                          className={cn("h-1 rounded-full transition-all duration-500", i === index ? "w-10 bg-accent" : "w-4 bg-border hover:bg-foreground/40")}
+                          className={cn("h-1 rounded-full transition-all duration-500", i === index ? "w-10 bg-accent shadow-[0_0_8px_2px_hsl(var(--accent)/0.4)]" : "w-4 bg-border hover:bg-foreground/40")}
                         />
                       ))}
                     </div>

@@ -94,7 +94,7 @@ export function Hero({ hero, availability }: HeroProps) {
             <div data-hero="label" data-reveal className="flex flex-wrap items-center gap-3">
               <span className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">{hero.label}</span>
               {availability && (
-                <span className="inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-3 py-1 text-xs font-medium text-foreground backdrop-blur">
+                <span className="inline-flex items-center gap-2 rounded-full border border-success/30 bg-background/60 px-3 py-1 text-xs font-medium text-foreground backdrop-blur animate-[glow-pulse_3s_ease-in-out_infinite] shadow-[0_0_8px_0_hsl(var(--success)/0.2)]">
                   <span className="relative flex size-1.5">
                     <span className="absolute inline-flex size-full animate-[pulse-dot_2s_ease-out_infinite] rounded-full bg-success" />
                     <span className="relative inline-flex size-1.5 rounded-full bg-success" />
@@ -108,7 +108,7 @@ export function Hero({ hero, availability }: HeroProps) {
               <span className="line block" aria-hidden>
                 {words.map((w, i) => (
                   <span key={i} className="inline-block overflow-hidden align-bottom pb-[0.08em] -mb-[0.08em]">
-                    <span data-hero-word className="inline-block will-change-transform">
+                    <span data-hero-word className={`inline-block will-change-transform ${i === 0 ? "text-shimmer" : ""}`}>
                       {w}
                     </span>
                     {i < words.length - 1 ? "\u00a0" : ""}

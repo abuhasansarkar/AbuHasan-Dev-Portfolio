@@ -14,6 +14,15 @@ export function CtaBanner({ cta }: { cta: SiteSettings["cta"] }) {
           {null}
         </Parallax>
         <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--primary-foreground)/0.06)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--primary-foreground)/0.06)_1px,transparent_1px)] bg-[size:72px_72px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)]" aria-hidden />
+        {/* Floating decorative dots */}
+        <div className="pointer-events-none absolute inset-0" aria-hidden>
+          <span className="absolute top-[15%] left-[10%] size-1.5 rounded-full bg-accent/60 animate-[dot-float-1_6s_ease-in-out_infinite]" />
+          <span className="absolute top-[25%] right-[15%] size-1 rounded-full bg-primary-foreground/30 animate-[dot-float-2_8s_ease-in-out_infinite_1s]" />
+          <span className="absolute bottom-[20%] left-[25%] size-2 rounded-full bg-accent/40 animate-[dot-float-3_7s_ease-in-out_infinite_0.5s]" />
+          <span className="absolute top-[60%] right-[30%] size-1.5 rounded-full bg-primary-foreground/20 animate-[dot-float-1_9s_ease-in-out_infinite_2s]" />
+          <span className="absolute bottom-[35%] left-[60%] size-1 rounded-full bg-accent/50 animate-[dot-float-2_7s_ease-in-out_infinite_1.5s]" />
+          <span className="absolute top-[40%] left-[45%] size-1.5 rounded-full bg-primary-foreground/15 animate-[dot-float-3_10s_ease-in-out_infinite_3s]" />
+        </div>
         <div className="relative grid gap-10 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-8">
             <TextReveal as="h2" text={cta.bannerHeadline} className="max-w-3xl font-display text-4xl font-semibold leading-[1.02] tracking-[-0.03em] md:text-6xl" />
@@ -25,7 +34,7 @@ export function CtaBanner({ cta }: { cta: SiteSettings["cta"] }) {
           </div>
           <Reveal className="lg:col-span-4 lg:justify-self-end" delay={0.25}>
             <Magnetic>
-              <Button asChild size="lg" variant="accent" data-cursor="cta">
+              <Button asChild size="lg" variant="accent" data-cursor="cta" className="breathe-glow">
                 <a href="#contact">
                   {cta.bannerButton}
                   <ArrowRight className="transition-transform duration-300 group-hover/btn:translate-x-1" aria-hidden />

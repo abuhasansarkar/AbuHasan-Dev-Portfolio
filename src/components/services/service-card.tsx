@@ -15,16 +15,16 @@ export function ServiceCard({ service, index }: { service: Service; index: numbe
   return (
     <article
       className={cn(
-        "group relative flex flex-col rounded-2xl border border-border bg-card p-6 transition-[border-color,background-color] duration-300 ease-[var(--ease-standard)] md:p-8",
-        open ? "border-foreground/30" : "hover:-translate-y-0.5 hover:border-foreground/20",
+        "group relative flex flex-col rounded-2xl border border-border bg-card p-6 transition-all duration-300 ease-[var(--ease-standard)] md:p-8 shine-on-hover",
+        open ? "border-foreground/30" : "hover:-translate-y-0.5 hover:border-foreground/20 hover:shadow-[0_8px_30px_-12px_hsl(var(--accent)/0.15)]",
       )}
     >
       <span className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100 [background:radial-gradient(600px_circle_at_var(--x,50%)_var(--y,50%),hsl(var(--accent)/0.08),transparent_40%)]" aria-hidden />
 
       <div className="flex items-start justify-between gap-4">
         <span className="font-display text-xs font-medium tracking-[0.2em] text-accent tabular-nums">{number}</span>
-        <span className="flex size-11 items-center justify-center rounded-full border border-border text-foreground transition-all duration-300 ease-[var(--ease-standard)] group-hover:scale-105 group-hover:border-accent/50 group-hover:text-accent">
-          <ServiceIcon name={service.icon} className="size-5" aria-hidden />
+        <span className="flex size-11 items-center justify-center rounded-full border border-border text-foreground transition-all duration-300 ease-[var(--ease-standard)] group-hover:scale-110 group-hover:border-accent/50 group-hover:text-accent group-hover:shadow-[0_0_12px_2px_hsl(var(--accent)/0.25)]">
+          <ServiceIcon name={service.icon} className="size-5 transition-transform duration-300 group-hover:scale-110" aria-hidden />
         </span>
       </div>
 

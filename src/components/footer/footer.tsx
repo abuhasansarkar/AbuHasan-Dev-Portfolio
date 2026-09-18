@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { Reveal } from "@/components/animations/reveal";
 import { navLinks } from "@/lib/site";
@@ -19,17 +18,17 @@ export function Footer({ profile, social }: { profile: SiteSettings["profile"]; 
 
   return (
     <footer className="border-t border-border/70">
-      <Reveal stagger={0.1} className="container-x grid gap-12 py-16 md:grid-cols-12 md:py-20">
-        <div className="md:col-span-5">
+      <div className="container-x grid gap-12 py-16 md:grid-cols-12 md:py-20">
+        <Reveal className="md:col-span-5" y={24}>
           <a href="#hero" className="font-display text-2xl font-semibold tracking-tight">
             {profile.name}
             <span className="text-accent">.</span>
           </a>
           <p className="mt-3 text-sm text-muted-foreground">{profile.tagline}</p>
           <p className="mt-8 max-w-sm text-sm leading-relaxed text-muted-foreground">Websites designed and built to generate leads, sales, trust and growth for businesses and agencies.</p>
-        </div>
+        </Reveal>
 
-        <nav aria-label="Footer" className="md:col-span-3">
+        <Reveal as="nav" aria-label="Footer" className="md:col-span-3" delay={0.15} y={24}>
           <p className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">Navigate</p>
           <ul className="mt-5 flex flex-col gap-3">
             {navLinks.map((l) => (
@@ -40,9 +39,9 @@ export function Footer({ profile, social }: { profile: SiteSettings["profile"]; 
               </li>
             ))}
           </ul>
-        </nav>
+        </Reveal>
 
-        <div className="md:col-span-3">
+        <Reveal className="md:col-span-3" delay={0.3} y={24}>
           <p className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">Elsewhere</p>
           <ul className="mt-5 flex flex-col gap-3">
             {socials.length === 0 && <li className="text-sm text-muted-foreground">Social links coming soon.</li>}
@@ -62,8 +61,8 @@ export function Footer({ profile, social }: { profile: SiteSettings["profile"]; 
               </li>
             )}
           </ul>
-        </div>
-      </Reveal>
+        </Reveal>
+      </div>
 
       <Reveal as="div" y={16} start="top 97%" className="border-t border-border/70">
         <div className="container-x flex flex-col gap-4 py-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
@@ -72,14 +71,10 @@ export function Footer({ profile, social }: { profile: SiteSettings["profile"]; 
           </p>
           <ul className="flex gap-6">
             <li>
-              <Link href="/privacy" className="link-underline transition-colors hover:text-foreground">
-                Privacy
-              </Link>
+              <span className="text-muted-foreground/60 cursor-default" title="Coming soon">Privacy</span>
             </li>
             <li>
-              <Link href="/terms" className="link-underline transition-colors hover:text-foreground">
-                Terms
-              </Link>
+              <span className="text-muted-foreground/60 cursor-default" title="Coming soon">Terms</span>
             </li>
           </ul>
         </div>

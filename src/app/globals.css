@@ -417,81 +417,157 @@ html.lenis body {
   }
 }
 
-/* ────────────────────────────────────────────────────────────────
-   Global Syntax Highlighting Palette (Tokyo Night / One Dark Pro)
-   ──────────────────────────────────────────────────────────────── */
-pre code.hljs,
-code.hljs {
-  color: #e6edf3;
-  background: transparent !important;
-}
-.hljs-comment,
-.hljs-quote {
-  color: #7d8590 !important;
-  font-style: italic;
-}
-.hljs-keyword,
-.hljs-selector-tag {
-  color: #ff7b72 !important; /* Vibrant coral-red */
-  font-weight: 600;
-}
-.hljs-tag,
-.hljs-name {
-  color: #7ee787 !important; /* Vibrant mint green */
-}
-.hljs-attr,
-.hljs-attribute {
-  color: #79c0ff !important; /* Vibrant sky blue */
-}
-.hljs-string,
-.hljs-symbol,
-.hljs-bullet,
-.hljs-addition {
-  color: #a5d6ff !important; /* Bright soft blue */
-}
-.hljs-number,
-.hljs-literal,
-.hljs-boolean {
-  color: #ffa657 !important; /* Vibrant amber orange */
-  font-weight: 500;
-}
-.hljs-built_in {
-  color: #d2a8ff !important; /* Vibrant purple */
-}
-.hljs-title,
-.hljs-title.function_,
-.hljs-title.class_ {
-  color: #d2a8ff !important; /* Vibrant lavender purple */
-  font-weight: 600;
-}
-.hljs-variable,
-.hljs-template-variable,
-.hljs-property {
-  color: #f0883e !important; /* Tangerine orange */
-}
-.hljs-type {
-  color: #ffa657 !important;
-  font-weight: 500;
-}
-.hljs-punctuation {
-  color: #8b949e !important;
-}
-.hljs-operator {
-  color: #ff7b72 !important;
-}
-.hljs-regexp,
-.hljs-meta {
-  color: #f0883e !important;
-}
-.hljs-deletion {
-  color: #ffa198 !important;
-  background-color: #490202;
-}
-
 /* Custom cursor is desktop-only; hide the native cursor when active */
 @media (pointer: fine) {
   html.has-custom-cursor,
   html.has-custom-cursor * {
     cursor: none !important;
+  }
+}
+
+/* ────────────────────────────────────────────────────────────────
+   Enhanced Animation Keyframes
+   ──────────────────────────────────────────────────────────────── */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 8px 0 hsl(var(--accent) / 0.3); }
+  50% { box-shadow: 0 0 20px 4px hsl(var(--accent) / 0.5); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes breathe {
+  0%, 100% { box-shadow: 0 0 0 0 hsl(var(--accent) / 0.4); }
+  50% { box-shadow: 0 0 12px 4px hsl(var(--accent) / 0.25); }
+}
+
+@keyframes shine-sweep {
+  0% { transform: translateX(-100%) skewX(-15deg); }
+  100% { transform: translateX(200%) skewX(-15deg); }
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes dot-float-1 {
+  0%, 100% { transform: translate(0, 0); opacity: 0.4; }
+  25% { transform: translate(12px, -18px); opacity: 0.7; }
+  50% { transform: translate(-8px, -30px); opacity: 0.5; }
+  75% { transform: translate(16px, -12px); opacity: 0.6; }
+}
+
+@keyframes dot-float-2 {
+  0%, 100% { transform: translate(0, 0); opacity: 0.3; }
+  33% { transform: translate(-16px, -22px); opacity: 0.6; }
+  66% { transform: translate(10px, -14px); opacity: 0.4; }
+}
+
+@keyframes dot-float-3 {
+  0%, 100% { transform: translate(0, 0); opacity: 0.5; }
+  50% { transform: translate(20px, -26px); opacity: 0.3; }
+}
+
+/* ────────────────────────────────────────────────────────────────
+   Enhanced Utility Classes
+   ──────────────────────────────────────────────────────────────── */
+
+/* Shimmer text effect — accent gradient that sweeps across text */
+@utility text-shimmer {
+  background: linear-gradient(
+    110deg,
+    hsl(var(--foreground)) 35%,
+    hsl(var(--accent)) 50%,
+    hsl(var(--foreground)) 65%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 4s linear infinite;
+}
+
+/* Glowing ring on hover for buttons/icons */
+@utility glow-ring {
+  transition: box-shadow 0.4s var(--ease-standard);
+  &:hover {
+    box-shadow: 0 0 16px 2px hsl(var(--accent) / 0.35);
+  }
+}
+
+/* Card hover glow with radial gradient */
+@utility card-hover-glow {
+  position: relative;
+  &::before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.4s var(--ease-standard);
+    background: radial-gradient(600px circle at var(--x, 50%) var(--y, 50%), hsl(var(--accent) / 0.07), transparent 40%);
+  }
+  &:hover::before {
+    opacity: 1;
+  }
+}
+
+/* Accent top-line that draws on hover */
+@utility accent-top-line {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    inset-inline: 1.75rem;
+    top: 0;
+    height: 1px;
+    background: hsl(var(--accent));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s var(--ease-out-expo);
+  }
+  &:hover::after {
+    transform: scaleX(1);
+  }
+}
+
+/* Breathing glow for CTA buttons */
+@utility breathe-glow {
+  animation: breathe 3s ease-in-out infinite;
+}
+
+/* Shine sweep overlay on hover */
+@utility shine-on-hover {
+  position: relative;
+  overflow: hidden;
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsl(var(--accent) / 0.08),
+      transparent
+    );
+    transform: translateX(-100%) skewX(-15deg);
+    transition: none;
+    pointer-events: none;
+    z-index: 1;
+  }
+  &:hover::before {
+    animation: shine-sweep 0.8s ease-out forwards;
   }
 }

@@ -25,7 +25,7 @@ export function Why() {
 
         <Reveal stagger={0.07} className="mt-16 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 lg:mt-24 lg:grid-cols-4">
           {principles.map((p, i) => (
-            <div key={p.title} className="group relative flex min-h-56 flex-col justify-between bg-card p-7 transition-colors duration-300 ease-[var(--ease-standard)] hover:bg-secondary">
+            <div key={p.title} className="group relative flex min-h-56 flex-col justify-between bg-card p-7 transition-all duration-300 ease-[var(--ease-standard)] hover:bg-secondary hover:-translate-y-0.5 accent-top-line">
               <span className="font-display text-xs font-medium tracking-[0.2em] text-accent tabular-nums">{String(i + 1).padStart(2, "0")}</span>
               <div>
                 <h3 className="font-display text-lg font-semibold tracking-tight">{p.title}</h3>

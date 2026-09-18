@@ -82,7 +82,7 @@ export function Navbar({ ctaLabel, name }: { ctaLabel: string; name: string }) {
           <div className="flex items-center gap-2">
             <ThemeToggle className="hidden lg:inline-flex" />
             <Magnetic strength={0.25} className="hidden lg:inline-block">
-              <Button asChild size="sm" variant="default" data-cursor="cta">
+              <Button asChild size="sm" variant="default" data-cursor="cta" className="breathe-glow">
                 <a href="#contact">{ctaLabel}</a>
               </Button>
             </Magnetic>

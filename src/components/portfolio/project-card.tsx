@@ -14,9 +14,10 @@ type ProjectCardProps = {
   index: number;
   wide: boolean;
   onOpen: () => void;
+  className?: string;
 };
 
-export function ProjectCard({ project, index, wide, onOpen }: ProjectCardProps) {
+export function ProjectCard({ project, index, wide, onOpen, className }: ProjectCardProps) {
   const ref = useRef<HTMLElement>(null);
   const [imgError, setImgError] = useState(false);
 
@@ -42,7 +43,7 @@ export function ProjectCard({ project, index, wide, onOpen }: ProjectCardProps) 
       ref={ref}
       onPointerMove={onMove}
       onPointerLeave={onLeave}
-      className={cn("group relative flex flex-col [perspective:1200px]", wide ? "lg:col-span-7" : "lg:col-span-5")}
+      className={cn("group relative flex flex-col [perspective:1200px]", wide ? "lg:col-span-7" : "lg:col-span-5", className)}
     >
       <button
         type="button"

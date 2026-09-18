@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState } from "react";
-import { ArrowUpRight, CheckCircle2, Loader2, RotateCcw, TriangleAlert, ChevronDown } from "lucide-react";
+import { ArrowUpRight, CheckCircle2, Loader2, RotateCcw, TriangleAlert, ChevronDown, Zap, Link as LinkIcon } from "lucide-react";
 import { toast } from "sonner";
 import { submitContact, type ContactState } from "@/app/actions/contact";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Magnetic } from "@/components/animations/magnetic";
 import { contactFormSchema, fieldErrorsFromZod, type ContactFieldErrors } from "@/lib/validation/contact";
 import type { SiteSettings } from "@/lib/settings/schema";
+import { cn } from "@/lib/utils";
 
 const initial: ContactState = { status: "idle" };
 
@@ -23,14 +24,28 @@ const defaultServices = [
   "Technical Consultation",
 ];
 
+const timelineOptions = [
+  "ASAP (< 2 weeks)",
+  "2 – 4 weeks",
+  "1 – 3 months",
+  "Flexible",
+];
+
 export function ContactForm({ contact }: { contact: SiteSettings["contact"] }) {
   const [state, action, pending] = useActionState(submitContact, initial);
   const [clientErrors, setClientErrors] = useState<ContactFieldErrors>({});
   const [submitted, setSubmitted] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
-  const errors = { ...clientErrors, ...(state.errors ?? {}) };
 
   const services = contact.projectTypes?.length ? contact.projectTypes : defaultServices;
+  const budgetRanges = contact.budgetRanges?.length
+    ? contact.budgetRanges
+    : ["Under $500", "$500 – $1,500", "$1,500 – $3,000", "$3,000 – $6,000", "$6,000+", "Not sure yet"];
+
+  const [selectedBudget, setSelectedBudget] = useState<string>(budgetRanges[1] ?? budgetRanges[0] ?? "Flexible / Discussion");
+  const [selectedTimeline, setSelectedTimeline] = useState<string>(timelineOptions[1] ?? "2 – 4 weeks");
+
+  const errors = { ...clientErrors, ...(state.errors ?? {}) };
 
   useEffect(() => {
     if (state.status === "success") {
@@ -58,7 +73,7 @@ export function ContactForm({ contact }: { contact: SiteSettings["contact"] }) {
 
   if (submitted && state.status === "success") {
     return (
-      <div className="flex min-h-[380px] flex-col items-center justify-center rounded-2xl border border-success/30 bg-success/5 p-8 text-center" role="status">
+      <div className="flex min-h-[420px] flex-col items-center justify-center rounded-2xl border border-success/30 bg-success/5 p-8 text-center" role="status">
         <div className="flex size-14 items-center justify-center rounded-full bg-success/10 text-success">
           <CheckCircle2 className="size-8" aria-hidden />
         </div>
@@ -84,42 +99,47 @@ export function ContactForm({ contact }: { contact: SiteSettings["contact"] }) {
         <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
-      {/* Full Name */}
-      <Field label="Full Name *" name="name" error={errors.name}>
-        <Input
-          id="name"
-          name="name"
-          autoComplete="name"
-          placeholder="e.g. Sarah Jenkins"
-          required
-          aria-invalid={Boolean(errors.name)}
-          aria-describedby={errors.name ? "name-error" : undefined}
-          className="h-12 rounded-xl border border-border/70 bg-secondary/40 px-4 text-sm placeholder:text-muted-foreground/60 transition-all duration-200 focus-visible:bg-background focus-visible:border-accent focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.2)]"
-        />
-      </Field>
+      {/* Hidden inputs for interactive pill pickers */}
+      <input type="hidden" name="budget" value={selectedBudget} />
+      <input type="hidden" name="timeline" value={selectedTimeline} />
 
-      {/* Email */}
-      <Field label="Email Address *" name="email" error={errors.email}>
-        <Input
-          id="email"
-          name="email"
-          type="email"
-          autoComplete="email"
-          placeholder="e.g. sarah@company.com"
-          required
-          aria-invalid={Boolean(errors.email)}
-          aria-describedby={errors.email ? "email-error" : undefined}
-          className="h-12 rounded-xl border border-border/70 bg-secondary/40 px-4 text-sm placeholder:text-muted-foreground/60 transition-all duration-200 focus-visible:bg-background focus-visible:border-accent focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.2)]"
-        />
-      </Field>
+      {/* Full Name & Email Row */}
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field label="Full Name *" name="name" error={errors.name}>
+          <Input
+            id="name"
+            name="name"
+            autoComplete="name"
+            placeholder="e.g. Sarah Jenkins"
+            required
+            aria-invalid={Boolean(errors.name)}
+            aria-describedby={errors.name ? "name-error" : undefined}
+            className="h-12 rounded-xl border border-border/70 bg-secondary/40 px-4 text-sm placeholder:text-muted-foreground/60 transition-all duration-200 focus-visible:bg-background focus-visible:border-accent focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.2)]"
+          />
+        </Field>
+
+        <Field label="Email Address *" name="email" error={errors.email}>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            placeholder="e.g. sarah@company.com"
+            required
+            aria-invalid={Boolean(errors.email)}
+            aria-describedby={errors.email ? "email-error" : undefined}
+            className="h-12 rounded-xl border border-border/70 bg-secondary/40 px-4 text-sm placeholder:text-muted-foreground/60 transition-all duration-200 focus-visible:bg-background focus-visible:border-accent focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.2)]"
+          />
+        </Field>
+      </div>
 
       {/* Row: Company Name & Service Required */}
       <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Company Name (optional)" name="company" error={errors.company}>
+        <Field label="Company / Brand (optional)" name="company" error={errors.company}>
           <Input
             id="company"
             name="company"
-            placeholder="e.g. Acme Corp"
+            placeholder="e.g. Acme Studio"
             className="h-12 rounded-xl border border-border/70 bg-secondary/40 px-4 text-sm placeholder:text-muted-foreground/60 transition-all duration-200 focus-visible:bg-background focus-visible:border-accent focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.2)]"
           />
         </Field>
@@ -149,17 +169,88 @@ export function ContactForm({ contact }: { contact: SiteSettings["contact"] }) {
         </Field>
       </div>
 
+      {/* Budget Range Selector */}
+      <div className="flex flex-col gap-2">
+        <label className="text-xs font-semibold text-foreground/85">
+          Expected Budget (USD)
+        </label>
+        <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Expected Budget">
+          {budgetRanges.map((range) => {
+            const isSelected = selectedBudget === range;
+            return (
+              <button
+                key={range}
+                type="button"
+                role="radio"
+                aria-checked={isSelected}
+                onClick={() => setSelectedBudget(range)}
+                className={cn(
+                  "rounded-xl border px-3.5 py-2 text-xs font-medium transition-all duration-200",
+                  isSelected
+                    ? "border-accent bg-accent/15 text-accent font-semibold shadow-[0_0_12px_-2px_hsl(var(--accent)/0.35)]"
+                    : "border-border/70 bg-secondary/30 text-muted-foreground hover:border-border hover:bg-secondary/60 hover:text-foreground",
+                )}
+              >
+                {range}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Project Timeline Selector */}
+      <div className="flex flex-col gap-2">
+        <label className="text-xs font-semibold text-foreground/85">
+          Desired Timeline
+        </label>
+        <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Desired Timeline">
+          {timelineOptions.map((option) => {
+            const isSelected = selectedTimeline === option;
+            return (
+              <button
+                key={option}
+                type="button"
+                role="radio"
+                aria-checked={isSelected}
+                onClick={() => setSelectedTimeline(option)}
+                className={cn(
+                  "rounded-xl border px-3.5 py-2 text-xs font-medium transition-all duration-200",
+                  isSelected
+                    ? "border-accent bg-accent/15 text-accent font-semibold shadow-[0_0_12px_-2px_hsl(var(--accent)/0.35)]"
+                    : "border-border/70 bg-secondary/30 text-muted-foreground hover:border-border hover:bg-secondary/60 hover:text-foreground",
+                )}
+              >
+                {option}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Project / Figma / Reference Link (optional) */}
+      <Field label="Project / Figma / Reference Link (optional)" name="projectLink" error={errors.projectLink}>
+        <div className="relative">
+          <Input
+            id="projectLink"
+            name="projectLink"
+            placeholder="https://figma.com/... or existing website URL"
+            className="h-12 rounded-xl border border-border/70 bg-secondary/40 pl-10 pr-4 text-sm placeholder:text-muted-foreground/60 transition-all duration-200 focus-visible:bg-background focus-visible:border-accent focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.2)]"
+          />
+          <LinkIcon className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" aria-hidden />
+        </div>
+      </Field>
+
       {/* Project Details */}
       <Field label="Project Details *" name="message" error={errors.message}>
         <Textarea
           id="message"
           name="message"
           rows={4}
-          placeholder="Tell us about your project goals, scope, and timeline..."
+          placeholder="Tell us about your project goals, key problems to solve, and target audience..."
           required
           aria-invalid={Boolean(errors.message)}
           aria-describedby={errors.message ? "message-error" : undefined}
-          className="min-h-[120px] resize-y rounded-xl border border-border/70 bg-secondary/40 p-4 text-sm placeholder:text-muted-foreground/60 transition-all duration-200 focus-visible:bg-background focus-visible:border-accent focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.2)]"
+          className="min-h-[110px] resize-y rounded-xl border border-border/70 bg-secondary/40 p-4 text-sm placeholder:text-muted-foreground/60 transition-all duration-200 focus-visible:bg-background focus-visible:border-accent focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.2)]"
         />
       </Field>
 
@@ -170,8 +261,15 @@ export function ContactForm({ contact }: { contact: SiteSettings["contact"] }) {
         </p>
       )}
 
-      {/* Submit Button */}
-      <div className="flex items-center justify-end pt-2">
+      {/* Submit Area: Response Time Guarantee + Button */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
+          <span className="flex size-6 items-center justify-center rounded-full bg-accent/15 text-accent shrink-0">
+            <Zap className="size-3.5" aria-hidden />
+          </span>
+          <span>{contact.responseTime || "Guaranteed reply within 24 hours"}</span>
+        </div>
+
         <Magnetic strength={0.3}>
           <button
             type="submit"

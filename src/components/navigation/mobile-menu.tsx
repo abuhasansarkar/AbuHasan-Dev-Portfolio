@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Magnetic } from "@/components/animations/magnetic";
 import { ThemeToggle } from "./theme-toggle";
@@ -84,15 +84,26 @@ export function MobileMenu({ open, onClose, links, ctaLabel, activeHref }: Mobil
               ))}
             </motion.nav>
 
-            <motion.div variants={item} initial="hidden" animate="visible" exit="exit" className="flex items-center justify-between gap-4 pt-10 border-t border-border/40">
-              <Magnetic strength={0.2} className="flex-1">
-                <Button asChild variant="accent" size="lg" className="w-full shadow-[0_0_24px_-4px_hsl(var(--accent)/0.4)]" data-cursor="cta">
-                  <a href="#contact" onClick={onClose}>
-                    {ctaLabel}
-                  </a>
-                </Button>
-              </Magnetic>
-              <ThemeToggle className="size-13 rounded-full border border-border bg-card/60 shadow-sm" />
+            <motion.div variants={item} initial="hidden" animate="visible" exit="exit" className="flex flex-col gap-3.5 pt-8 border-t border-border/40">
+              <a
+                href="/abuhasan-cv.pdf"
+                download="AbuHasan-Resume.pdf"
+                onClick={onClose}
+                className="flex items-center justify-center gap-2 rounded-full border border-border/80 bg-secondary/50 py-3 text-sm font-medium text-foreground transition hover:bg-secondary hover:border-accent/40"
+              >
+                <FileDown className="size-4 text-accent" aria-hidden />
+                <span>Download Resume (CV)</span>
+              </a>
+              <div className="flex items-center justify-between gap-4">
+                <Magnetic strength={0.2} className="flex-1">
+                  <Button asChild variant="accent" size="lg" className="w-full shadow-[0_0_24px_-4px_hsl(var(--accent)/0.4)]" data-cursor="cta">
+                    <a href="#contact" onClick={onClose}>
+                      {ctaLabel}
+                    </a>
+                  </Button>
+                </Magnetic>
+                <ThemeToggle className="size-13 rounded-full border border-border bg-card/60 shadow-sm" />
+              </div>
             </motion.div>
           </div>
         </motion.div>

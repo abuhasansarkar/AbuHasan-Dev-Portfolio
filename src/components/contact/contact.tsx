@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowUpRight, Clock, Video, Mail } from "lucide-react";
+import { ArrowUpRight, Clock, Video, Mail, Globe2, MessageCircle } from "lucide-react";
 import { Reveal } from "@/components/animations/reveal";
 import { Section } from "@/components/layout/section";
 import type { SiteSettings } from "@/lib/settings/schema";
@@ -120,6 +120,26 @@ export function Contact({
                     <div className="flex items-center gap-3 rounded-full border border-border/60 bg-secondary/50 px-4 py-2.5 text-xs sm:text-sm font-medium text-foreground/85 transition-all duration-300 hover:border-accent/40 hover:bg-secondary hover:shadow-xs truncate">
                       <Mail className="size-4 text-muted-foreground shrink-0" aria-hidden />
                       <span className="truncate">{email}</span>
+                    </div>
+
+                    {/* WhatsApp Quick Chat */}
+                    <a
+                      href="https://wa.me/8801700000000?text=Hi%20Abu%20Hasan,%20I'd%20like%20to%20discuss%20a%20website%20project."
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group/wa flex items-center justify-between rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-2.5 text-xs sm:text-sm font-medium text-emerald-400 dark:text-emerald-300 transition-all duration-300 hover:border-emerald-500/50 hover:bg-emerald-500/20 hover:shadow-[0_0_16px_hsl(150_80%_40%/0.15)]"
+                    >
+                      <span className="flex items-center gap-2.5">
+                        <MessageCircle className="size-4 text-emerald-400" aria-hidden />
+                        <span>Quick Chat on WhatsApp</span>
+                      </span>
+                      <ArrowUpRight className="size-3.5 transition-transform duration-300 group-hover/wa:translate-x-0.5 group-hover/wa:-translate-y-0.5" aria-hidden />
+                    </a>
+
+                    {/* Timezone overlap info */}
+                    <div className="flex items-center gap-2.5 rounded-xl border border-border/50 bg-secondary/30 px-3.5 py-2 text-[11px] sm:text-xs text-muted-foreground">
+                      <Globe2 className="size-3.5 text-accent shrink-0" aria-hidden />
+                      <span>Dhaka (UTC+6) &middot; Seamless US, UK &amp; EU hours overlap</span>
                     </div>
                   </div>
                 </div>

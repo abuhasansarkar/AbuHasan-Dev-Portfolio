@@ -5,10 +5,24 @@ import type { Service } from "@prisma/client";
 import { cn } from "@/lib/utils";
 import { ServiceIcon } from "./service-icon";
 
+const serviceEstimates: Record<string, string> = {
+  "website-design": "From $699",
+  "wordpress-development": "From $599",
+  "elementor-development": "From $399",
+  "landing-pages": "From $349",
+  "ui-ux-design": "From $499",
+  "woocommerce": "From $799",
+  "framer-webflow": "From $599",
+  "seo": "From $299",
+  "performance-optimization": "From $199",
+  "troubleshooting": "From $99",
+};
+
 export function ServiceCard({ service, index }: { service: Service; index: number }) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
   const number = String(index + 1).padStart(2, "0");
+  const estimate = serviceEstimates[service.slug] ?? "Custom Scope";
 
   return (
     <article
@@ -22,7 +36,12 @@ export function ServiceCard({ service, index }: { service: Service; index: numbe
       <span className="pointer-events-none absolute inset-0 rounded-3xl opacity-0 transition-opacity duration-300 group-hover:opacity-100 [background:radial-gradient(600px_circle_at_var(--x,50%)_var(--y,50%),hsl(var(--accent)/0.08),transparent_40%)]" aria-hidden />
 
       <div className="flex items-start justify-between gap-4">
-        <span className="font-mono text-xs font-semibold tracking-wider text-accent tabular-nums">{number}</span>
+        <div className="flex items-center gap-2.5">
+          <span className="font-mono text-xs font-semibold tracking-wider text-accent tabular-nums">{number}</span>
+          <span className="rounded-full border border-border/70 bg-secondary/50 px-2.5 py-0.5 font-mono text-[11px] font-medium text-foreground/80">
+            {estimate}
+          </span>
+        </div>
         <span className="flex size-12 items-center justify-center rounded-2xl border border-border/70 bg-secondary/70 text-foreground transition-all duration-300 ease-[var(--ease-standard)] group-hover:scale-110 group-hover:border-accent/50 group-hover:text-accent group-hover:shadow-[0_0_16px_2px_hsl(var(--accent)/0.25)]">
           <ServiceIcon name={service.icon} className="size-5 transition-transform duration-300 group-hover:scale-110" aria-hidden />
         </span>

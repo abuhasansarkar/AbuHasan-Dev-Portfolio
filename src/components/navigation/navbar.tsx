@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, X, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Magnetic } from "@/components/animations/magnetic";
 import { useActiveSection } from "@/hooks/use-active-section";
@@ -95,6 +95,14 @@ export function Navbar({ ctaLabel, name }: { ctaLabel: string; name: string }) {
 
           <div className="flex items-center gap-2.5">
             <ThemeToggle className="hidden lg:inline-flex" />
+            <a
+              href="/abuhasan-cv.pdf"
+              download="AbuHasan-Resume.pdf"
+              className="hidden xl:inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-secondary/40 px-3.5 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:border-accent/40 hover:bg-secondary transition-all"
+            >
+              <FileDown className="size-3.5 text-accent" aria-hidden />
+              <span>CV</span>
+            </a>
             <Magnetic strength={0.25} className="hidden lg:inline-block">
               <Button asChild size="sm" variant="accent" data-cursor="cta" className="breathe-glow font-medium shadow-[0_0_20px_-3px_hsl(var(--accent)/0.4)]">
                 <a href="#contact">{ctaLabel}</a>

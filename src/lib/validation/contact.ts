@@ -6,6 +6,8 @@ export const contactFormSchema = z.object({
   company: z.string().trim().max(120, "Company name is too long").optional().or(z.literal("")),
   projectType: z.string().trim().min(1, "Please choose a service").max(80),
   budget: z.string().trim().max(80).optional().default("Flexible / Discussion"),
+  timeline: z.string().trim().max(80).optional().default("Flexible"),
+  projectLink: z.string().trim().max(250).optional().or(z.literal("")),
   message: z.string().trim().min(10, "Please tell us a little more about your project (at least 10 characters)").max(3000, "Please keep it under 3000 characters"),
   /** Honeypot: must stay empty. Hidden from humans. */
   website: z.string().max(0).optional().or(z.literal("")),

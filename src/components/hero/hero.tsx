@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Magnetic } from "@/components/animations/magnetic";
 import { HeroSceneLoader } from "@/components/three/hero-scene-loader";
@@ -120,7 +120,7 @@ export function Hero({ hero, availability }: HeroProps) {
               {hero.subheadline}
             </p>
 
-            <div className="mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center lg:mt-11">
+            <div className="mt-9 flex flex-wrap items-center gap-3.5 sm:gap-4 lg:mt-11">
               <div data-hero="cta" data-reveal>
                 <Magnetic>
                   <Button asChild size="lg" variant="accent" data-cursor="cta" className="breathe-glow font-medium shadow-[0_4px_24px_-2px_hsl(var(--accent)/0.5)]">
@@ -138,7 +138,17 @@ export function Hero({ hero, availability }: HeroProps) {
                   </Button>
                 </Magnetic>
               </div>
-              <a data-hero="cta" data-reveal href={hero.tertiaryLink.href} className="link-underline ml-1 inline-flex items-center gap-1.5 text-sm font-medium text-foreground sm:ml-3 hover:text-accent transition-colors">
+              <div data-hero="cta" data-reveal>
+                <Magnetic>
+                  <Button asChild size="lg" variant="ghost" data-cursor="cta" className="border border-border/70 bg-secondary/30 backdrop-blur-sm transition-all hover:bg-secondary/70 hover:border-accent/40 text-foreground font-medium">
+                    <a href="/abuhasan-cv.pdf" download="AbuHasan-Resume.pdf" className="inline-flex items-center gap-2">
+                      <FileDown className="size-4 text-accent" aria-hidden />
+                      <span>Download CV</span>
+                    </a>
+                  </Button>
+                </Magnetic>
+              </div>
+              <a data-hero="cta" data-reveal href={hero.tertiaryLink.href} className="link-underline ml-1 inline-flex items-center gap-1.5 text-sm font-medium text-foreground sm:ml-2 hover:text-accent transition-colors">
                 {hero.tertiaryLink.label}
                 <ArrowUpRight className="size-4" aria-hidden />
               </a>

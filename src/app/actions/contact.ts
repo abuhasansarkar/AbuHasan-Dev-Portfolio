@@ -18,6 +18,8 @@ export async function submitContact(_prev: ContactState, formData: FormData): Pr
     company: String(formData.get("company") ?? ""),
     projectType: String(formData.get("projectType") || formData.get("service") || ""),
     budget: String(formData.get("budget") || "Flexible / Discussion"),
+    timeline: String(formData.get("timeline") || "Flexible"),
+    projectLink: String(formData.get("projectLink") ?? ""),
     message: String(formData.get("message") ?? ""),
     website: String(formData.get("website") ?? ""),
   };
@@ -38,8 +40,13 @@ export async function submitContact(_prev: ContactState, formData: FormData): Pr
   }
 
   try {
-    const formattedMessage = parsed.data.company
-      ? `[Company / Organization: ${parsed.data.company}]\n\n${parsed.data.message}`
+    const metaParts = [];
+    if (parsed.data.company) metaParts.push(`Company: ${parsed.data.company}`);
+    if (parsed.data.timeline) metaParts.push(`Timeline: ${parsed.data.timeline}`);
+    if (parsed.data.projectLink) metaParts.push(`Project Link: ${parsed.data.projectLink}`);
+
+    const formattedMessage = metaParts.length > 0
+      ? `[${metaParts.join(" | ")}]\n\n${parsed.data.message}`
       : parsed.data.message;
 
     await prisma.contactSubmission.create({

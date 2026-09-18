@@ -571,3 +571,80 @@ html.lenis body {
     animation: shine-sweep 0.8s ease-out forwards;
   }
 }
+
+/* Glassmorphism surfaces with luminous border */
+@utility glass-card {
+  background: hsl(var(--card) / 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid hsl(var(--border) / 0.8);
+  box-shadow: 0 4px 24px -1px hsl(var(--foreground) / 0.04), 0 1px 2px 0 hsl(var(--foreground) / 0.02);
+}
+
+@utility glass-panel {
+  background: hsl(var(--background) / 0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid hsl(var(--border) / 0.7);
+}
+
+@utility glass-chip {
+  background: hsl(var(--secondary) / 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid hsl(var(--border) / 0.8);
+  transition: all 0.3s var(--ease-standard);
+  &:hover {
+    background: hsl(var(--secondary) / 0.9);
+    border-color: hsl(var(--accent) / 0.4);
+    box-shadow: 0 0 12px 1px hsl(var(--accent) / 0.15);
+  }
+}
+
+/* Radial spotlight card helper */
+@utility spotlight-card {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    background: radial-gradient(
+      450px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      hsl(var(--accent) / 0.1),
+      transparent 60%
+    );
+    z-index: 1;
+  }
+  &:hover::before {
+    opacity: 1;
+  }
+}
+
+/* Radar pulse animation for online/available beacons */
+@keyframes radar-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  75%, 100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+@utility radar-beacon {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    background: currentColor;
+    animation: radar-ping 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+}
+

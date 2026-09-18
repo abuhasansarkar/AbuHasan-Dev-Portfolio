@@ -23,25 +23,31 @@ export function Transformation() {
               titleClassName="lg:text-5xl"
             />
 
-            <Reveal stagger={0.1} className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
-              <div className="rounded-2xl border border-border p-5">
-                <p className="mb-4 text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">Before</p>
-                <ul className="flex flex-col gap-2.5 text-sm">
+            <Reveal stagger={0.1} className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-1">
+              <div className="rounded-3xl border border-destructive/30 bg-destructive/5 p-6 backdrop-blur-xs shadow-xs transition-all duration-300 hover:border-destructive/50">
+                <div className="flex items-center justify-between mb-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.25em] text-destructive">Before</p>
+                  <span className="flex size-5 items-center justify-center rounded-full bg-destructive/20 text-destructive text-[10px] font-bold">✕</span>
+                </div>
+                <ul className="flex flex-col gap-3 text-sm">
                   {before.map((b) => (
-                    <li key={b} className="flex items-center gap-3 text-muted-foreground">
+                    <li key={b} className="flex items-center gap-3 text-muted-foreground font-medium">
                       <X className="size-4 shrink-0 text-destructive/80" aria-hidden />
-                      {b}
+                      <span>{b}</span>
                     </li>
                   ))}
                 </ul>
               </div>
-              <div className="rounded-2xl border border-accent/30 bg-accent/5 p-5">
-                <p className="mb-4 text-xs font-medium uppercase tracking-[0.22em] text-accent">After</p>
-                <ul className="flex flex-col gap-2.5 text-sm">
+              <div className="rounded-3xl border border-success/40 bg-success/10 p-6 backdrop-blur-xs shadow-[0_8px_30px_-10px_hsl(var(--success)/0.2)] transition-all duration-300 hover:border-success/60">
+                <div className="flex items-center justify-between mb-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.25em] text-success">After</p>
+                  <span className="flex size-5 items-center justify-center rounded-full bg-success/20 text-success text-[10px] font-bold">✓</span>
+                </div>
+                <ul className="flex flex-col gap-3 text-sm">
                   {after.map((a) => (
-                    <li key={a} className="flex items-center gap-3">
+                    <li key={a} className="flex items-center gap-3 font-medium text-foreground">
                       <Check className="size-4 shrink-0 text-success" aria-hidden />
-                      {a}
+                      <span>{a}</span>
                     </li>
                   ))}
                 </ul>

@@ -10,7 +10,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Magnetic } from "@/components/animations/magnetic";
 import { contactFormSchema, fieldErrorsFromZod, type ContactFieldErrors } from "@/lib/validation/contact";
 import type { SiteSettings } from "@/lib/settings/schema";
-import { cn } from "@/lib/utils";
 
 const initial: ContactState = { status: "idle" };
 
@@ -91,41 +90,41 @@ export function ContactForm({ contact }: { contact: SiteSettings["contact"] }) {
           id="name"
           name="name"
           autoComplete="name"
-          placeholder="enter your full name"
+          placeholder="e.g. Sarah Jenkins"
           required
           aria-invalid={Boolean(errors.name)}
           aria-describedby={errors.name ? "name-error" : undefined}
-          className="h-12 rounded-xl bg-secondary/60 px-4 text-sm placeholder:text-muted-foreground/70 border-border/50 focus-visible:bg-background focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.15)]"
+          className="h-12 rounded-xl border border-border/70 bg-secondary/40 px-4 text-sm placeholder:text-muted-foreground/60 transition-all duration-200 focus-visible:bg-background focus-visible:border-accent focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.2)]"
         />
       </Field>
 
       {/* Email */}
-      <Field label="Email *" name="email" error={errors.email}>
+      <Field label="Email Address *" name="email" error={errors.email}>
         <Input
           id="email"
           name="email"
           type="email"
           autoComplete="email"
-          placeholder="enter your email address"
+          placeholder="e.g. sarah@company.com"
           required
           aria-invalid={Boolean(errors.email)}
           aria-describedby={errors.email ? "email-error" : undefined}
-          className="h-12 rounded-xl bg-secondary/60 px-4 text-sm placeholder:text-muted-foreground/70 border-border/50 focus-visible:bg-background focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.15)]"
+          className="h-12 rounded-xl border border-border/70 bg-secondary/40 px-4 text-sm placeholder:text-muted-foreground/60 transition-all duration-200 focus-visible:bg-background focus-visible:border-accent focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.2)]"
         />
       </Field>
 
       {/* Row: Company Name & Service Required */}
       <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Company name (optional)" name="company" error={errors.company}>
+        <Field label="Company Name (optional)" name="company" error={errors.company}>
           <Input
             id="company"
             name="company"
-            placeholder="Ex. Google, Inc"
-            className="h-12 rounded-xl bg-secondary/60 px-4 text-sm placeholder:text-muted-foreground/70 border-border/50 focus-visible:bg-background focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.15)]"
+            placeholder="e.g. Acme Corp"
+            className="h-12 rounded-xl border border-border/70 bg-secondary/40 px-4 text-sm placeholder:text-muted-foreground/60 transition-all duration-200 focus-visible:bg-background focus-visible:border-accent focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.2)]"
           />
         </Field>
 
-        <Field label="Service required *" name="projectType" error={errors.projectType}>
+        <Field label="Service Required *" name="projectType" error={errors.projectType}>
           <div className="relative">
             <select
               id="projectType"
@@ -134,10 +133,10 @@ export function ContactForm({ contact }: { contact: SiteSettings["contact"] }) {
               required
               aria-invalid={Boolean(errors.projectType)}
               aria-describedby={errors.projectType ? "projectType-error" : undefined}
-              className="h-12 w-full appearance-none rounded-xl border border-border/50 bg-secondary/60 px-4 pr-10 text-sm text-foreground focus-visible:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.15)] transition-colors"
+              className="h-12 w-full appearance-none rounded-xl border border-border/70 bg-secondary/40 px-4 pr-10 text-sm text-foreground transition-all duration-200 focus-visible:bg-background focus-visible:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.2)]"
             >
               <option value="" disabled className="text-muted-foreground">
-                choose your service name
+                Select service...
               </option>
               {services.map((item) => (
                 <option key={item} value={item} className="bg-background text-foreground py-1">
@@ -151,16 +150,16 @@ export function ContactForm({ contact }: { contact: SiteSettings["contact"] }) {
       </div>
 
       {/* Project Details */}
-      <Field label="Project details *" name="message" error={errors.message}>
+      <Field label="Project Details *" name="message" error={errors.message}>
         <Textarea
           id="message"
           name="message"
           rows={4}
-          placeholder="Tell us more about your project..."
+          placeholder="Tell us about your project goals, scope, and timeline..."
           required
           aria-invalid={Boolean(errors.message)}
           aria-describedby={errors.message ? "message-error" : undefined}
-          className="min-h-[110px] resize-y rounded-xl bg-secondary/60 p-4 text-sm placeholder:text-muted-foreground/70 border-border/50 focus-visible:bg-background focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.15)]"
+          className="min-h-[120px] resize-y rounded-xl border border-border/70 bg-secondary/40 p-4 text-sm placeholder:text-muted-foreground/60 transition-all duration-200 focus-visible:bg-background focus-visible:border-accent focus-visible:shadow-[0_0_0_3px_hsl(var(--ring)/0.2)]"
         />
       </Field>
 
@@ -178,16 +177,16 @@ export function ContactForm({ contact }: { contact: SiteSettings["contact"] }) {
             type="submit"
             disabled={pending}
             data-cursor="cta"
-            className="group/btn inline-flex items-center gap-3 rounded-full border border-border/80 bg-background/90 py-2 pl-2 pr-6 text-sm font-semibold text-foreground shadow-md transition-all duration-300 hover:bg-background hover:shadow-lg hover:scale-[1.03] hover:border-accent/40 disabled:opacity-60"
+            className="group/btn inline-flex items-center gap-3 rounded-full border border-accent/40 bg-accent py-2 pl-2 pr-6 text-sm font-semibold text-accent-foreground shadow-[0_4px_20px_-3px_hsl(var(--accent)/0.5)] transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_8px_30px_-4px_hsl(var(--accent)/0.6)] disabled:opacity-60"
           >
-            <span className="flex size-10 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-sm transition-transform duration-300 group-hover/btn:scale-110 group-hover/btn:rotate-12">
+            <span className="flex size-10 items-center justify-center rounded-full bg-accent-foreground/20 text-accent-foreground shadow-xs transition-transform duration-300 group-hover/btn:scale-110 group-hover/btn:rotate-12">
               {pending ? (
                 <Loader2 className="size-4 animate-spin" aria-hidden />
               ) : (
                 <ArrowUpRight className="size-4 stroke-[2.5]" aria-hidden />
               )}
             </span>
-            <span>{pending ? "Sending..." : "Submit Us"}</span>
+            <span>{pending ? "Sending..." : "Send Message"}</span>
           </button>
         </Magnetic>
       </div>

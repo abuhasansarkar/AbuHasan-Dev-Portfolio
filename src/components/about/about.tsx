@@ -27,11 +27,11 @@ export function About({ about, profile }: AboutProps) {
             </div>
 
             <Reveal className="mt-10" delay={0.1}>
-              <p className="mb-4 text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">Focus areas</p>
-              <ul className="flex flex-wrap gap-2">
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">Focus areas</p>
+              <ul className="flex flex-wrap gap-2.5">
                 {about.focusAreas.map((area) => (
                   <li key={area}>
-                    <Badge variant="outline" className="px-3 py-1.5 text-sm transition-colors hover:border-foreground/40 hover:text-foreground">
+                    <Badge variant="outline" className="px-3.5 py-1.5 text-sm font-medium transition-all duration-300 hover:border-accent/60 hover:bg-secondary/70 hover:text-foreground hover:shadow-[0_0_12px_1px_hsl(var(--accent)/0.15)] hover:scale-[1.02]">
                       {area}
                     </Badge>
                   </li>
@@ -43,38 +43,40 @@ export function About({ about, profile }: AboutProps) {
           <div className="col-span-12 lg:col-span-4 lg:col-start-9">
             <Reveal className="lg:sticky lg:top-28" y={48}>
               {/* Identity card */}
-              <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-8 grain">
-                <div className="absolute -right-16 -top-16 size-48 rounded-full bg-accent/15 blur-3xl" aria-hidden />
+              <div className="relative overflow-hidden rounded-3xl border border-border/80 bg-card/80 backdrop-blur-xl p-8 shadow-[0_20px_50px_-15px_hsl(var(--foreground)/0.08)] grain shine-on-hover">
+                <div className="pointer-events-none absolute -right-16 -top-16 size-52 rounded-full bg-accent/20 blur-3xl" aria-hidden />
                 <div className="relative flex items-start justify-between">
                   <div>
-                    <p className="font-display text-2xl font-semibold tracking-tight">{profile.name}</p>
-                    <p className="mt-1 text-sm text-muted-foreground">{profile.role}</p>
+                    <p className="font-display text-2xl font-bold tracking-tight text-foreground">{profile.name}</p>
+                    <p className="mt-1 text-sm font-medium text-muted-foreground">{profile.role}</p>
                   </div>
                   <div className="relative size-20 shrink-0" aria-hidden>
                     <svg viewBox="0 0 100 100" className="absolute inset-0 size-full animate-spin-slow text-muted-foreground">
                       <defs>
                         <path id="about-circle" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0" />
                       </defs>
-                      <text className="fill-current text-[9.5px] font-medium uppercase tracking-[0.25em]">
+                      <text className="fill-current text-[9.5px] font-semibold uppercase tracking-[0.25em]">
                         <textPath href="#about-circle">design · develop · convert · </textPath>
                       </text>
                     </svg>
-                    <span className="absolute inset-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent" />
+                    <span className="absolute inset-1/2 size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent shadow-[0_0_8px_hsl(var(--accent))]" />
                   </div>
                 </div>
 
                 <dl className="relative mt-8 grid gap-4 text-sm">
                   {profile.location && (
-                    <div className="flex justify-between gap-4 border-t border-border pt-4">
+                    <div className="flex justify-between gap-4 border-t border-border/60 pt-4">
                       <dt className="text-muted-foreground">Based</dt>
-                      <dd className="text-right font-medium">{profile.location}</dd>
+                      <dd className="text-right font-medium text-foreground">{profile.location}</dd>
                     </div>
                   )}
                   {profile.availability && (
-                    <div className="flex justify-between gap-4 border-t border-border pt-4">
+                    <div className="flex justify-between gap-4 border-t border-border/60 pt-4">
                       <dt className="text-muted-foreground">Status</dt>
-                      <dd className="flex items-center gap-2 font-medium">
-                        <span className="size-1.5 rounded-full bg-success" aria-hidden />
+                      <dd className="flex items-center gap-2.5 font-medium text-foreground">
+                        <span className="relative flex size-2 items-center justify-center">
+                          <span className="radar-beacon size-1.5 rounded-full bg-success" />
+                        </span>
                         {profile.availability}
                       </dd>
                     </div>
@@ -82,16 +84,16 @@ export function About({ about, profile }: AboutProps) {
                 </dl>
 
                 {about.currentlyFocusedOn.length > 0 && (
-                  <div className="relative mt-8 rounded-xl border border-border bg-background/60 p-5">
-                    <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">
-                      <Sparkles className="size-3.5 text-accent" aria-hidden />
+                  <div className="relative mt-8 rounded-2xl border border-border/70 bg-secondary/40 backdrop-blur-sm p-5 shadow-xs">
+                    <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-foreground/80">
+                      <Sparkles className="size-3.5 text-accent animate-[glow-pulse_3s_ease-in-out_infinite]" aria-hidden />
                       Currently focused on
                     </p>
-                    <ul className="mt-4 flex flex-col gap-3 text-sm leading-snug">
+                    <ul className="mt-4 flex flex-col gap-2.5 text-sm leading-snug text-muted-foreground">
                       {about.currentlyFocusedOn.map((item) => (
-                        <li key={item} className="flex gap-3">
-                          <span className="mt-2 size-1 shrink-0 rounded-full bg-foreground/60" aria-hidden />
-                          {item}
+                        <li key={item} className="flex items-center gap-3">
+                          <span className="size-1.5 shrink-0 rounded-full bg-accent" aria-hidden />
+                          <span className="text-foreground/90">{item}</span>
                         </li>
                       ))}
                     </ul>

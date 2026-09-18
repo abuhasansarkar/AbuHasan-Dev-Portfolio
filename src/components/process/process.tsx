@@ -60,23 +60,33 @@ export function Process() {
           {processSteps.map((step, i) => (
             <StepCard key={step.title} step={step} index={i} className="w-[440px] xl:w-[480px]" />
           ))}
-          <div className="flex w-[360px] shrink-0 flex-col justify-center rounded-2xl border border-dashed border-border p-10">
-            <p className="font-display text-3xl font-semibold tracking-tight">Ready when you are.</p>
-            <p className="mt-3 text-muted-foreground">Every project starts with a conversation.</p>
-            <a href="#contact" className="link-underline mt-6 inline-block text-sm font-medium" data-cursor="cta">
-              Start a project
-            </a>
+          <div className="flex w-[380px] shrink-0 flex-col justify-between rounded-3xl border border-accent/40 bg-accent/10 p-10 backdrop-blur-md shadow-[0_12px_40px_-10px_hsl(var(--accent)/0.25)]">
+            <div>
+              <span className="font-mono text-xs font-semibold uppercase tracking-[0.25em] text-accent">Next Step</span>
+              <p className="mt-4 font-display text-3xl font-bold tracking-tight text-foreground">Ready when you are.</p>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">Every great project starts with a simple conversation. Let&apos;s talk about yours.</p>
+            </div>
+            <div className="pt-8">
+              <a
+                href="#contact"
+                className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground shadow-[0_0_20px_-2px_hsl(var(--accent)/0.5)] transition-all hover:scale-105 hover:bg-accent/90"
+                data-cursor="cta"
+              >
+                <span>Start a project</span>
+                <span>→</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Mobile / tablet: vertical timeline */}
       <div className="container-x mt-14 pb-20 md:pb-28 lg:hidden">
-        <ol className="relative flex flex-col gap-6 border-l border-border pl-8">
+        <ol className="relative flex flex-col gap-6 border-l border-border/70 pl-8">
           {processSteps.map((step, i) => (
             <Reveal as="li" key={step.title} className="relative" delay={0.05}>
-              <span className="absolute -left-[2.35rem] top-6 flex size-5 items-center justify-center rounded-full border border-border bg-background" aria-hidden>
-                <span className="size-1.5 rounded-full bg-accent" />
+              <span className="absolute -left-[2.35rem] top-7 flex size-5 items-center justify-center rounded-full border border-border bg-background shadow-xs" aria-hidden>
+                <span className="size-2 rounded-full bg-accent animate-[glow-pulse_3s_ease-in-out_infinite]" />
               </span>
               <StepCard step={step} index={i} />
             </Reveal>
@@ -89,18 +99,20 @@ export function Process() {
 
 function StepCard({ step, index, className = "" }: { step: (typeof processSteps)[number]; index: number; className?: string }) {
   return (
-    <article className={`group relative flex shrink-0 flex-col rounded-2xl border border-border bg-card p-7 transition-all duration-300 ease-[var(--ease-standard)] hover:border-foreground/25 hover:-translate-y-0.5 accent-top-line md:p-9 ${className}`}>
+    <article className={`group relative flex shrink-0 flex-col rounded-3xl border border-border/80 bg-card/75 p-7 md:p-9 backdrop-blur-md shadow-xs transition-all duration-300 ease-[var(--ease-standard)] hover:border-accent/40 hover:-translate-y-1 hover:shadow-[0_16px_40px_-10px_hsl(var(--accent)/0.18)] accent-top-line shine-on-hover ${className}`}>
       <div className="flex items-center justify-between">
-        <span className="font-display text-5xl font-semibold tracking-[-0.04em] text-foreground/15 transition-all duration-500 group-hover:text-accent group-hover:drop-shadow-[0_0_8px_hsl(var(--accent)/0.4)] md:text-6xl">{String(index + 1).padStart(2, "0")}</span>
-        <span className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">{`Step ${index + 1} of ${processSteps.length}`}</span>
+        <span className="font-mono text-5xl font-bold tracking-tight text-foreground/15 transition-all duration-500 group-hover:text-accent group-hover:drop-shadow-[0_0_12px_hsl(var(--accent)/0.4)] md:text-6xl">{String(index + 1).padStart(2, "0")}</span>
+        <span className="rounded-full bg-secondary/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">{`Step ${index + 1} of ${processSteps.length}`}</span>
       </div>
-      <h3 className="mt-8 font-display text-2xl font-semibold tracking-tight md:text-3xl">{step.title}</h3>
+      <h3 className="mt-7 font-display text-2xl font-bold tracking-tight text-foreground transition-colors group-hover:text-accent md:text-3xl">{step.title}</h3>
       <p className="mt-3 text-sm leading-relaxed text-muted-foreground md:text-base">{step.description}</p>
-      <ul className="mt-6 flex flex-col gap-2 border-t border-border pt-5 text-sm">
+      <ul className="mt-6 flex flex-col gap-2.5 border-t border-border/60 pt-5 text-sm">
         {step.deliverables.map((d) => (
-          <li key={d} className="flex items-center gap-2.5">
-            <Check className="size-3.5 text-success" aria-hidden />
-            {d}
+          <li key={d} className="flex items-center gap-3 text-foreground/90">
+            <span className="flex size-4.5 items-center justify-center rounded-full bg-success/15 text-success shrink-0" aria-hidden>
+              <Check className="size-2.5 stroke-[3]" />
+            </span>
+            <span>{d}</span>
           </li>
         ))}
       </ul>

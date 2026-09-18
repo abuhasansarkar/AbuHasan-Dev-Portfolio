@@ -18,9 +18,12 @@ export function TechOrbit({ name }: { name: string }) {
   return (
     <div className="relative mx-auto aspect-square w-full max-w-[720px] select-none" role="img" aria-label={`Technology orbit: ${techGroups.map((g) => g.items.join(", ")).join("; ")}`}>
       {/* Core */}
-      <div className="absolute left-1/2 top-1/2 z-10 flex size-[28%] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full border border-border bg-card text-center shadow-[0_0_80px_-20px_hsl(var(--accent)/0.5)]">
-        <span className="font-display text-lg font-semibold tracking-tight lg:text-xl">{name}</span>
-        <span className="mt-1 px-4 text-[11px] leading-tight text-muted-foreground">{activeGroup ? activeGroup.label : "Design · Development · Conversion"}</span>
+      <div className="absolute left-1/2 top-1/2 z-10 flex size-[28%] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full border border-border/80 bg-card/85 backdrop-blur-xl text-center shadow-[0_0_90px_-15px_hsl(var(--accent)/0.5)]">
+        <span className="relative flex size-2 items-center justify-center mb-1">
+          <span className="radar-beacon size-1.5 rounded-full bg-accent" />
+        </span>
+        <span className="font-display text-lg font-bold tracking-tight lg:text-xl text-foreground">{name}</span>
+        <span className="mt-1 px-4 text-[11px] leading-tight text-muted-foreground font-medium">{activeGroup ? activeGroup.label : "Design · Development · Conversion"}</span>
       </div>
 
       {techGroups.map((group, gi) => {
@@ -30,7 +33,7 @@ export function TechOrbit({ name }: { name: string }) {
         return (
           <div
             key={group.id}
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-border/70"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-border/60"
             style={{ width: `${size}%`, height: `${size}%` }}
           >
             <div
@@ -56,7 +59,7 @@ export function TechOrbit({ name }: { name: string }) {
                         onFocus={() => setHover(group.id)}
                         onBlur={() => setHover(null)}
                         className={cn(
-                          "-translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full border border-border bg-background px-3 py-1.5 text-xs font-medium tracking-tight transition-all duration-300 hover:border-accent hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring lg:text-sm",
+                          "-translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full border border-border/70 bg-card/80 backdrop-blur-md px-3.5 py-1.5 text-xs font-medium tracking-tight shadow-xs transition-all duration-300 hover:border-accent hover:bg-card hover:text-accent hover:scale-110 hover:shadow-[0_0_16px_2px_hsl(var(--accent)/0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring lg:text-sm",
                           dim && "opacity-30",
                         )}
                         aria-label={`${item} (${group.label})`}

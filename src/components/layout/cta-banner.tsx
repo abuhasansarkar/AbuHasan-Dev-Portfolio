@@ -9,11 +9,11 @@ import type { SiteSettings } from "@/lib/settings/schema";
 export function CtaBanner({ cta }: { cta: SiteSettings["cta"] }) {
   return (
     <div className="container-x pb-20 md:pb-28 lg:pb-36">
-      <div className="relative overflow-hidden rounded-3xl border border-border bg-primary px-6 py-16 text-primary-foreground md:px-14 md:py-24 grain">
-        <Parallax strength={24} className="absolute -right-24 -top-24 size-[420px] rounded-full bg-accent/30 blur-[100px]" aria-hidden>
+      <div className="relative overflow-hidden rounded-[32px] sm:rounded-[40px] border border-border/80 bg-primary px-7 py-16 text-primary-foreground md:px-16 md:py-24 shadow-[0_30px_90px_-20px_hsl(var(--accent)/0.3)] grain shine-on-hover">
+        <Parallax strength={24} className="absolute -right-24 -top-24 size-[440px] rounded-full bg-accent/30 blur-[110px]" aria-hidden>
           {null}
         </Parallax>
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--primary-foreground)/0.06)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--primary-foreground)/0.06)_1px,transparent_1px)] bg-[size:72px_72px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)]" aria-hidden />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--primary-foreground)/0.06)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--primary-foreground)/0.06)_1px,transparent_1px)] bg-[size:72px_72px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" aria-hidden />
         {/* Floating decorative dots */}
         <div className="pointer-events-none absolute inset-0" aria-hidden>
           <span className="absolute top-[15%] left-[10%] size-1.5 rounded-full bg-accent/60 animate-[dot-float-1_6s_ease-in-out_infinite]" />
@@ -25,16 +25,24 @@ export function CtaBanner({ cta }: { cta: SiteSettings["cta"] }) {
         </div>
         <div className="relative grid gap-10 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-8">
-            <TextReveal as="h2" text={cta.bannerHeadline} className="max-w-3xl font-display text-4xl font-semibold leading-[1.02] tracking-[-0.03em] md:text-6xl" />
+            <Reveal as="div" y={10} className="mb-6">
+              <span className="inline-flex items-center gap-2.5 rounded-full border border-accent/40 bg-accent/15 px-3.5 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-accent backdrop-blur-md">
+                <span className="relative flex size-2 items-center justify-center">
+                  <span className="radar-beacon size-1.5 rounded-full bg-accent" />
+                </span>
+                Available For Next Quarter
+              </span>
+            </Reveal>
+            <TextReveal as="h2" text={cta.bannerHeadline} className="max-w-3xl font-display text-4xl font-bold leading-[1.02] tracking-[-0.03em] md:text-6xl" />
             {cta.bannerBody && (
-              <Reveal as="p" delay={0.15} className="mt-6 max-w-xl text-base leading-relaxed text-primary-foreground/70 md:text-lg">
+              <Reveal as="p" delay={0.15} className="mt-6 max-w-xl text-base leading-relaxed text-primary-foreground/75 md:text-lg">
                 {cta.bannerBody}
               </Reveal>
             )}
           </div>
           <Reveal className="lg:col-span-4 lg:justify-self-end" delay={0.25}>
             <Magnetic>
-              <Button asChild size="lg" variant="accent" data-cursor="cta" className="breathe-glow">
+              <Button asChild size="lg" variant="accent" data-cursor="cta" className="breathe-glow font-semibold shadow-[0_4px_30px_hsl(var(--accent)/0.6)] hover:scale-105 transition-all">
                 <a href="#contact">
                   {cta.bannerButton}
                   <ArrowRight className="transition-transform duration-300 group-hover/btn:translate-x-1" aria-hidden />

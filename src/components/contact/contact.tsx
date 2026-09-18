@@ -23,47 +23,47 @@ export function Contact({
   const role = profile?.role || "Full-Stack Web Developer & WordPress Specialist";
 
   return (
-    <Section id="contact" aria-labelledby="contact-title" className="relative py-16 sm:py-24 lg:py-32 overflow-hidden bg-accent">
+    <Section id="contact" aria-labelledby="contact-title" className="relative py-20 sm:py-28 lg:py-36 overflow-hidden border-t border-border/70">
+      {/* Decorative Warm Ambient Glow */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,hsl(var(--accent)/0.12),transparent_65%)]" aria-hidden />
+
       {/* Decorative Dot Matrix Patterns */}
-      <div className="pointer-events-none absolute -top-10 -left-10 size-72 opacity-20" aria-hidden>
+      <div className="pointer-events-none absolute -top-10 -left-10 size-72 opacity-15" aria-hidden>
         <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="dot-pattern-1" width="20" height="20" patternUnits="userSpaceOnUse">
-              <circle cx="2" cy="2" r="2" fill="hsl(var(--accent-foreground))" />
+              <circle cx="2" cy="2" r="2" fill="hsl(var(--accent))" />
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#dot-pattern-1)" />
         </svg>
       </div>
-      <div className="pointer-events-none absolute -bottom-10 -right-10 size-80 opacity-20" aria-hidden>
+      <div className="pointer-events-none absolute -bottom-10 -right-10 size-80 opacity-15" aria-hidden>
         <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="dot-pattern-2" width="20" height="20" patternUnits="userSpaceOnUse">
-              <circle cx="2" cy="2" r="2" fill="hsl(var(--accent-foreground))" />
+              <circle cx="2" cy="2" r="2" fill="hsl(var(--accent))" />
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#dot-pattern-2)" />
         </svg>
       </div>
 
-      {/* Subtle organic gradient glow */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,hsl(var(--accent-foreground)/0.12),transparent_50%)]" aria-hidden />
-
       {/* Floating dots for depth */}
       <div className="pointer-events-none absolute inset-0" aria-hidden>
-        <span className="absolute top-[12%] left-[8%] size-1.5 rounded-full bg-accent-foreground/20 animate-[dot-float-1_8s_ease-in-out_infinite]" />
-        <span className="absolute top-[30%] right-[12%] size-1 rounded-full bg-accent-foreground/15 animate-[dot-float-2_9s_ease-in-out_infinite_1s]" />
-        <span className="absolute bottom-[18%] left-[20%] size-2 rounded-full bg-accent-foreground/10 animate-[dot-float-3_7s_ease-in-out_infinite_2s]" />
+        <span className="absolute top-[12%] left-[8%] size-1.5 rounded-full bg-accent/30 animate-[dot-float-1_8s_ease-in-out_infinite]" />
+        <span className="absolute top-[30%] right-[12%] size-1 rounded-full bg-accent/20 animate-[dot-float-2_9s_ease-in-out_infinite_1s]" />
+        <span className="absolute bottom-[18%] left-[20%] size-2 rounded-full bg-accent/15 animate-[dot-float-3_7s_ease-in-out_infinite_2s]" />
       </div>
 
       <div className="container-x relative z-10">
         <Reveal y={24}>
           {/* Main Card Container */}
-          <div className="relative mx-auto w-full max-w-6xl rounded-[28px] sm:rounded-[36px] bg-background text-foreground shadow-[0_25px_70px_-15px_hsl(var(--foreground)/0.2)] p-6 sm:p-10 md:p-12 lg:p-16 border border-border shine-on-hover">
+          <div className="relative mx-auto w-full max-w-6xl rounded-[32px] sm:rounded-[40px] bg-card/90 text-foreground shadow-[0_30px_90px_-20px_hsl(var(--foreground)/0.12)] p-7 sm:p-10 md:p-12 lg:p-16 border border-border/80 backdrop-blur-xl grain shine-on-hover">
             {/* Header Area */}
-            <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between pb-10 border-b border-border">
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between pb-10 border-b border-border/60">
               <div>
-                <h2 id="contact-title" className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
+                <h2 id="contact-title" className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground">
                   Let&apos;s Build Something{" "}
                   <span className="block font-serif italic font-normal text-accent sm:inline">
                     Extraordinary
@@ -71,7 +71,7 @@ export function Contact({
                 </h2>
               </div>
               <p className="max-w-md text-sm sm:text-base text-muted-foreground lg:text-right leading-relaxed">
-                We help businesses design, develop, and scale reliable software solutions.
+                We help businesses design, develop, and scale high-converting, reliable web solutions.
               </p>
             </div>
 
@@ -82,7 +82,7 @@ export function Contact({
                 <div className="flex flex-col gap-6">
                   {/* Photo & Name Row */}
                   <div className="flex items-start gap-4 sm:gap-5">
-                    <div className="relative size-28 sm:size-36 shrink-0 overflow-hidden rounded-2xl shadow-md border border-border bg-secondary">
+                    <div className="relative size-28 sm:size-36 shrink-0 overflow-hidden rounded-2xl shadow-lg border border-border/80 bg-secondary">
                       <Image
                         src="/abuhasan.jpg"
                         alt={name}
@@ -91,12 +91,15 @@ export function Contact({
                         className="object-cover object-top"
                         priority
                       />
+                      <span className="absolute bottom-2 right-2 flex size-3 items-center justify-center" title="Available for new projects">
+                        <span className="radar-beacon size-2 rounded-full bg-success shadow-[0_0_6px_hsl(var(--success))]" />
+                      </span>
                     </div>
                     <div className="flex flex-col pt-1">
-                      <h3 className="font-display text-lg sm:text-xl font-bold tracking-tight">
+                      <h3 className="font-display text-lg sm:text-xl font-bold tracking-tight text-foreground">
                         {name}
                       </h3>
-                      <p className="mt-1 text-xs sm:text-sm text-muted-foreground leading-snug">
+                      <p className="mt-1 text-xs sm:text-sm text-muted-foreground leading-snug font-medium">
                         {role}
                       </p>
                     </div>
@@ -104,17 +107,17 @@ export function Contact({
 
                   {/* Informational Pill Badges with hover animation */}
                   <div className="flex flex-col gap-2.5 max-w-sm">
-                    <div className="flex items-center gap-3 rounded-full bg-secondary px-4 py-2.5 text-xs sm:text-sm font-medium text-foreground/80 transition-all duration-300 hover:bg-secondary/80 hover:scale-[1.02] hover:shadow-sm">
-                      <Clock className="size-4 text-foreground/60 shrink-0" aria-hidden />
+                    <div className="flex items-center gap-3 rounded-full border border-border/60 bg-secondary/50 px-4 py-2.5 text-xs sm:text-sm font-medium text-foreground/85 transition-all duration-300 hover:border-accent/40 hover:bg-secondary hover:shadow-xs">
+                      <Clock className="size-4 text-accent shrink-0" aria-hidden />
                       <span>30m Discovery Call</span>
                     </div>
 
-                    <div className="flex items-center gap-3 rounded-full bg-secondary px-4 py-2.5 text-xs sm:text-sm font-medium text-foreground/80 transition-all duration-300 hover:bg-secondary/80 hover:scale-[1.02] hover:shadow-sm">
+                    <div className="flex items-center gap-3 rounded-full border border-border/60 bg-secondary/50 px-4 py-2.5 text-xs sm:text-sm font-medium text-foreground/85 transition-all duration-300 hover:border-accent/40 hover:bg-secondary hover:shadow-xs">
                       <Video className="size-4 text-accent shrink-0" aria-hidden />
                       <span>Google Meet / Zoom</span>
                     </div>
 
-                    <div className="flex items-center gap-3 rounded-full bg-secondary px-4 py-2.5 text-xs sm:text-sm font-medium text-foreground/80 transition-all duration-300 hover:bg-secondary/80 hover:scale-[1.02] hover:shadow-sm truncate">
+                    <div className="flex items-center gap-3 rounded-full border border-border/60 bg-secondary/50 px-4 py-2.5 text-xs sm:text-sm font-medium text-foreground/85 transition-all duration-300 hover:border-accent/40 hover:bg-secondary hover:shadow-xs truncate">
                       <Mail className="size-4 text-muted-foreground shrink-0" aria-hidden />
                       <span className="truncate">{email}</span>
                     </div>
@@ -122,15 +125,15 @@ export function Contact({
                 </div>
 
                 {/* Direct Booking Link at bottom */}
-                <div className="pt-8 text-xs sm:text-sm text-muted-foreground">
-                  Not Interested to submit the form?{" "}
+                <div className="pt-8 text-xs sm:text-sm text-muted-foreground font-medium">
+                  Prefer to schedule directly?{" "}
                   <a
                     href={calendlyUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-semibold text-accent hover:text-accent/80 inline-flex items-center gap-1 underline underline-offset-4 transition-colors"
                   >
-                    Book A Free Call Directly
+                    Book A Free Discovery Call
                     <ArrowUpRight className="size-3.5 inline shrink-0" aria-hidden />
                   </a>
                 </div>

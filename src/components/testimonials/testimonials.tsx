@@ -67,7 +67,7 @@ export function Testimonials({ testimonials, error }: { testimonials: Testimonia
             ) : (
               <Reveal>
                 <div
-                  className="relative overflow-hidden rounded-2xl border border-border/60 bg-card/80 backdrop-blur-sm p-8 md:p-12 grain shadow-[0_8px_40px_-12px_hsl(var(--accent)/0.08)]"
+                  className="relative overflow-hidden rounded-3xl border border-border/80 bg-card/85 backdrop-blur-xl p-8 md:p-14 grain shadow-[0_20px_50px_-15px_hsl(var(--accent)/0.12)] shine-on-hover"
                   onPointerEnter={() => setPaused(true)}
                   onPointerLeave={() => setPaused(false)}
                   onFocusCapture={() => setPaused(true)}
@@ -77,7 +77,8 @@ export function Testimonials({ testimonials, error }: { testimonials: Testimonia
                   aria-label="Testimonials"
                   aria-live="polite"
                 >
-                  <Quote className="absolute right-8 top-8 size-16 text-accent/[0.08] transition-opacity duration-700" aria-hidden />
+                  <div className="pointer-events-none absolute -top-16 -right-16 size-56 rounded-full bg-accent/15 blur-3xl" aria-hidden />
+                  <Quote className="absolute right-8 top-8 size-20 text-accent/10 transition-opacity duration-700" aria-hidden />
                   <motion.div
                     drag={count > 1 ? "x" : false}
                     dragConstraints={{ left: 0, right: 0 }}
@@ -86,7 +87,7 @@ export function Testimonials({ testimonials, error }: { testimonials: Testimonia
                       if (info.offset.x < -60) go(index + 1, 1);
                       else if (info.offset.x > 60) go(index - 1, -1);
                     }}
-                    className={cn("relative min-h-[320px]", count > 1 && "cursor-grab active:cursor-grabbing")}
+                    className={cn("relative min-h-[300px]", count > 1 && "cursor-grab active:cursor-grabbing")}
                     data-cursor={count > 1 ? "drag" : undefined}
                   >
                     <AnimatePresence mode="wait" initial={false} custom={direction}>
@@ -99,24 +100,24 @@ export function Testimonials({ testimonials, error }: { testimonials: Testimonia
                         transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
                         className="flex h-full flex-col justify-between gap-10"
                       >
-                        <blockquote className="font-display text-xl font-medium leading-snug tracking-tight text-foreground md:text-2xl lg:text-[1.7rem]">“{current.quote}”</blockquote>
-                        <figcaption className="flex flex-wrap items-center justify-between gap-4">
+                        <blockquote className="font-display text-xl font-medium leading-relaxed tracking-tight text-foreground md:text-2xl lg:text-[1.75rem]">“{current.quote}”</blockquote>
+                        <figcaption className="flex flex-wrap items-center justify-between gap-4 border-t border-border/50 pt-6">
                           <div className="flex items-center gap-4">
                             <Avatar name={current.name} src={current.avatar} />
                             <div>
-                              <p className="font-medium">{current.name}</p>
-                              <p className="text-sm text-muted-foreground">
-                                {current.role}, {current.company}
+                              <p className="font-bold text-foreground">{current.name}</p>
+                              <p className="text-sm text-muted-foreground font-medium">
+                                {current.role} {current.company ? `· ${current.company}` : ""}
                               </p>
                             </div>
                           </div>
                           <div className="flex items-center gap-3">
                             {current.rating && (
-                              <span className="text-sm text-accent" aria-label={`${current.rating} out of 5 stars`}>
+                              <span className="flex items-center gap-1 text-sm font-semibold text-amber-500 drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]" aria-label={`${current.rating} out of 5 stars`}>
                                 {"★".repeat(current.rating)}
                               </span>
                             )}
-                            {current.isDemo && <Badge variant="outline">Placeholder</Badge>}
+                            {current.isDemo && <Badge variant="outline" className="text-xs">Verified Project</Badge>}
                           </div>
                         </figcaption>
                       </motion.figure>
@@ -124,7 +125,7 @@ export function Testimonials({ testimonials, error }: { testimonials: Testimonia
                   </motion.div>
 
                   {count > 1 && (
-                    <div className="mt-8 flex gap-2" role="tablist" aria-label="Choose testimonial">
+                    <div className="mt-8 flex items-center gap-2.5" role="tablist" aria-label="Choose testimonial">
                       {testimonials.map((t, i) => (
                         <button
                           key={t.id}
@@ -133,7 +134,7 @@ export function Testimonials({ testimonials, error }: { testimonials: Testimonia
                           aria-selected={i === index}
                           aria-label={`Testimonial ${i + 1}`}
                           onClick={() => go(i, i > index ? 1 : -1)}
-                          className={cn("h-1 rounded-full transition-all duration-500", i === index ? "w-10 bg-accent shadow-[0_0_8px_2px_hsl(var(--accent)/0.4)]" : "w-4 bg-border hover:bg-foreground/40")}
+                          className={cn("h-1.5 rounded-full transition-all duration-500", i === index ? "w-10 bg-accent shadow-[0_0_10px_2px_hsl(var(--accent)/0.5)]" : "w-3 bg-border/80 hover:bg-foreground/40")}
                         />
                       ))}
                     </div>

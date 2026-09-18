@@ -92,12 +92,11 @@ export function Hero({ hero, availability }: HeroProps) {
         <div data-hero="content" className="grid grid-cols-12 gap-6">
           <div className="col-span-12 lg:col-span-8 xl:col-span-7">
             <div data-hero="label" data-reveal className="flex flex-wrap items-center gap-3">
-              <span className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">{hero.label}</span>
+              <span className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">{hero.label}</span>
               {availability && (
-                <span className="inline-flex items-center gap-2 rounded-full border border-success/30 bg-background/60 px-3 py-1 text-xs font-medium text-foreground backdrop-blur animate-[glow-pulse_3s_ease-in-out_infinite] shadow-[0_0_8px_0_hsl(var(--success)/0.2)]">
-                  <span className="relative flex size-1.5">
-                    <span className="absolute inline-flex size-full animate-[pulse-dot_2s_ease-out_infinite] rounded-full bg-success" />
-                    <span className="relative inline-flex size-1.5 rounded-full bg-success" />
+                <span className="inline-flex items-center gap-2.5 rounded-full border border-success/40 bg-success/10 px-3.5 py-1 text-xs font-medium text-foreground backdrop-blur-md shadow-[0_0_12px_1px_hsl(var(--success)/0.25)]">
+                  <span className="relative flex size-2 items-center justify-center">
+                    <span className="radar-beacon size-1.5 rounded-full bg-success" />
                   </span>
                   {availability}
                 </span>
@@ -108,7 +107,7 @@ export function Hero({ hero, availability }: HeroProps) {
               <span className="line block" aria-hidden>
                 {words.map((w, i) => (
                   <span key={i} className="inline-block overflow-hidden align-bottom pb-[0.08em] -mb-[0.08em]">
-                    <span data-hero-word className={`inline-block will-change-transform ${i === 0 ? "text-shimmer" : ""}`}>
+                    <span data-hero-word className={`inline-block will-change-transform ${i === 0 ? "text-shimmer font-bold" : ""}`}>
                       {w}
                     </span>
                     {i < words.length - 1 ? "\u00a0" : ""}
@@ -124,7 +123,7 @@ export function Hero({ hero, availability }: HeroProps) {
             <div className="mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center lg:mt-11">
               <div data-hero="cta" data-reveal>
                 <Magnetic>
-                  <Button asChild size="lg" variant="default" data-cursor="cta">
+                  <Button asChild size="lg" variant="accent" data-cursor="cta" className="breathe-glow font-medium shadow-[0_4px_24px_-2px_hsl(var(--accent)/0.5)]">
                     <a href={hero.primaryCta.href}>
                       {hero.primaryCta.label}
                       <ArrowRight className="transition-transform duration-300 group-hover/btn:translate-x-1" aria-hidden />
@@ -134,15 +133,31 @@ export function Hero({ hero, availability }: HeroProps) {
               </div>
               <div data-hero="cta" data-reveal>
                 <Magnetic>
-                  <Button asChild size="lg" variant="outline" data-cursor="cta">
+                  <Button asChild size="lg" variant="outline" data-cursor="cta" className="border-border/80 bg-card/40 backdrop-blur-sm transition-all hover:bg-card hover:border-foreground/30 hover:shadow-sm">
                     <a href={hero.secondaryCta.href}>{hero.secondaryCta.label}</a>
                   </Button>
                 </Magnetic>
               </div>
-              <a data-hero="cta" data-reveal href={hero.tertiaryLink.href} className="link-underline ml-1 inline-flex items-center gap-1 text-sm font-medium text-foreground sm:ml-3">
+              <a data-hero="cta" data-reveal href={hero.tertiaryLink.href} className="link-underline ml-1 inline-flex items-center gap-1.5 text-sm font-medium text-foreground sm:ml-3 hover:text-accent transition-colors">
                 {hero.tertiaryLink.label}
                 <ArrowUpRight className="size-4" aria-hidden />
               </a>
+            </div>
+
+            {/* Quick Trust / Credibility Badges */}
+            <div data-hero="cta" data-reveal className="mt-10 flex flex-wrap items-center gap-y-2 gap-x-6 text-xs text-muted-foreground pt-4 border-t border-border/40">
+              <span className="flex items-center gap-2">
+                <span className="size-1.5 rounded-full bg-accent" />
+                <span>100% Client Satisfaction</span>
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="size-1.5 rounded-full bg-accent" />
+                <span>50+ High-Performance Websites</span>
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="size-1.5 rounded-full bg-accent" />
+                <span>WordPress & Full-Stack Pro</span>
+              </span>
             </div>
           </div>
         </div>

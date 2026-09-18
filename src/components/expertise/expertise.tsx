@@ -24,10 +24,10 @@ export function Expertise({ name }: { name: string }) {
             <div className="mt-12 flex flex-col gap-8 lg:hidden">
               {techGroups.map((group) => (
                 <div key={group.id}>
-                  <p className="mb-3 text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">{group.label}</p>
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">{group.label}</p>
                   <Reveal stagger={0.04} className="flex flex-wrap gap-2">
                     {group.items.map((item) => (
-                      <span key={item} className="rounded-full border border-border bg-card px-3.5 py-2 text-sm font-medium tracking-tight">
+                      <span key={item} className="rounded-full border border-border/70 bg-card/80 backdrop-blur-sm px-3.5 py-2 text-sm font-medium tracking-tight shadow-xs hover:border-accent/40 hover:text-accent transition-all">
                         {item}
                       </span>
                     ))}

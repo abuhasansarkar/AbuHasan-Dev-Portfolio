@@ -59,9 +59,12 @@ export function MobileMenu({ open, onClose, links, ctaLabel, activeHref }: Mobil
           initial="hidden"
           animate="visible"
           exit="exit"
-          className="fixed inset-0 z-40 flex flex-col bg-background grain lg:hidden"
+          className="fixed inset-0 z-40 flex flex-col bg-background/95 backdrop-blur-2xl grain lg:hidden"
         >
-          <div className="container-x flex flex-1 flex-col justify-between pb-10 pt-28">
+          {/* Subtle ambient light orb */}
+          <div className="pointer-events-none absolute -top-20 -right-20 size-80 rounded-full bg-accent/15 blur-3xl" aria-hidden />
+
+          <div className="container-x relative z-10 flex flex-1 flex-col justify-between pb-10 pt-28">
             <motion.nav variants={list} initial="hidden" animate="visible" exit="exit" className="flex flex-col gap-1">
               {links.map((link, i) => (
                 <motion.a
@@ -70,26 +73,26 @@ export function MobileMenu({ open, onClose, links, ctaLabel, activeHref }: Mobil
                   href={link.href}
                   onClick={onClose}
                   aria-current={activeHref === link.href ? "page" : undefined}
-                  className="group flex items-baseline justify-between border-b border-border py-4 font-display text-4xl font-semibold tracking-tight text-foreground sm:text-5xl"
+                  className="group flex items-baseline justify-between border-b border-border/60 py-4 font-display text-4xl font-semibold tracking-tight text-foreground sm:text-5xl transition-colors hover:text-accent"
                 >
                   <span className="flex items-baseline gap-4">
-                    <span className="text-xs font-medium text-muted-foreground tabular-nums">0{i + 1}</span>
+                    <span className="font-mono text-xs font-medium text-accent tabular-nums">0{i + 1}</span>
                     <span className={activeHref === link.href ? "text-accent" : ""}>{link.label}</span>
                   </span>
-                  <ArrowUpRight className="size-6 text-muted-foreground transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-foreground" aria-hidden />
+                  <ArrowUpRight className="size-6 text-muted-foreground transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-accent" aria-hidden />
                 </motion.a>
               ))}
             </motion.nav>
 
-            <motion.div variants={item} initial="hidden" animate="visible" exit="exit" className="flex items-center justify-between gap-4 pt-10">
+            <motion.div variants={item} initial="hidden" animate="visible" exit="exit" className="flex items-center justify-between gap-4 pt-10 border-t border-border/40">
               <Magnetic strength={0.2} className="flex-1">
-                <Button asChild variant="accent" size="lg" className="w-full" data-cursor="cta">
+                <Button asChild variant="accent" size="lg" className="w-full shadow-[0_0_24px_-4px_hsl(var(--accent)/0.4)]" data-cursor="cta">
                   <a href="#contact" onClick={onClose}>
                     {ctaLabel}
                   </a>
                 </Button>
               </Magnetic>
-              <ThemeToggle className="size-13 border border-border" />
+              <ThemeToggle className="size-13 rounded-full border border-border bg-card/60 shadow-sm" />
             </motion.div>
           </div>
         </motion.div>

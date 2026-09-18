@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { ArrowLeft } from "lucide-react";
 import { saveCategory, deleteCategory } from "@/app/actions/admin/categories";
-import { ConfirmButton } from "@/components/admin/confirm-button";
+import { DeleteForm } from "@/components/admin/delete-form";
 import { Flash } from "@/components/admin/flash";
 import { FormField, FormSection } from "@/components/admin/form-field";
 import { PageHeader } from "@/components/admin/page-header";
@@ -58,29 +58,31 @@ export default async function EditCategoryPage({ params }: { params: Promise<{ i
           </FormField>
         </FormSection>
 
-        <div className="flex items-center justify-between gap-3">
-          <form action={deleteCategory}>
-            <input type="hidden" name="id" value={category.id} />
-            <ConfirmButton
-              variant="destructive"
-              size="sm"
-              confirmText={
-                category._count.posts > 0
-                  ? `"${category.name}" has ${category._count.posts} post(s). Delete anyway?`
-                  : `Delete category "${category.name}"?`
-              }
-            >
-              Delete category
-            </ConfirmButton>
-          </form>
-          <div className="flex gap-3">
-            <Link href="/admin/categories" className="inline-flex h-9 items-center rounded-lg border border-border px-4 text-sm font-medium text-muted-foreground hover:text-foreground">
-              Cancel
-            </Link>
-            <SubmitButton pendingLabel="Saving…">Save changes</SubmitButton>
-          </div>
+        <div className="flex items-center justify-end gap-3">
+          <Link href="/admin/categories" className="inline-flex h-9 items-center rounded-lg border border-border px-4 text-sm font-medium text-muted-foreground hover:text-foreground">
+            Cancel
+          </Link>
+          <SubmitButton pendingLabel="Saving…">Save changes</SubmitButton>
         </div>
       </form>
+
+      {/* Delete lives outside the save form – nested <form> elements are invalid HTML. */}
+      <div className="mt-6">
+        <DeleteForm
+          action={deleteCategory}
+          id={category.id}
+          ariaLabel={`Delete category ${category.name}`}
+          confirmText={
+            category._count.posts > 0
+              ? `"${category.name}" has ${category._count.posts} post(s). Delete anyway?`
+              : `Delete category "${category.name}"?`
+          }
+          variant="destructive"
+          size="sm"
+        >
+          Delete category
+        </DeleteForm>
+      </div>
     </>
   );
 }

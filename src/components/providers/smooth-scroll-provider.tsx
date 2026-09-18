@@ -35,7 +35,6 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
       lenis.raf(time * 1000);
     };
     gsap.ticker.add(tickerCallback);
-    gsap.ticker.lagSmoothing(0);
 
     // Refresh ScrollTrigger once everything (fonts, images, 3D Canvas) is ready
     const handleRefresh = () => {
@@ -44,6 +43,9 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
 
     window.addEventListener("load", handleRefresh);
     const timeout = setTimeout(handleRefresh, 600);
+
+    // Also refresh after a longer delay for slow-loading fonts/images
+    const longTimeout = setTimeout(handleRefresh, 2000);
 
     // Intercept internal hash links for butter-smooth scroll
     const handleAnchorClick = (e: MouseEvent) => {
@@ -64,6 +66,7 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
       document.removeEventListener("click", handleAnchorClick);
       window.removeEventListener("load", handleRefresh);
       clearTimeout(timeout);
+      clearTimeout(longTimeout);
       gsap.ticker.remove(tickerCallback);
       lenis.destroy();
       setLenisInstance(null);

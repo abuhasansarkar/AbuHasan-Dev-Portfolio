@@ -15,6 +15,16 @@ export async function ensureInitialAdmin() {
   const password = process.env.ADMIN_PASSWORD;
   if (!email || !password) return;
 
+  // Hardening: never bootstrap a known demo account in production.
+  const isDemoCredential = email === "admin@example.com" || password === "ChangeThisImmediately123!";
+  if (process.env.NODE_ENV === "production" && isDemoCredential) {
+    console.warn(
+      "[auth] Refusing to create an admin account with known demo credentials in production. " +
+        "Set real ADMIN_EMAIL / ADMIN_PASSWORD values in the environment first.",
+    );
+    return;
+  }
+
   await prisma.admin.create({
     data: {
       email,

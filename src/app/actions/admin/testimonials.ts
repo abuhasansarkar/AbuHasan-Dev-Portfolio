@@ -37,14 +37,14 @@ export async function saveTestimonial(_prev: ActionState, fd: FormData): Promise
   redirect("/admin/testimonials?saved=1");
 }
 
-export async function deleteTestimonial(fd: FormData) {
+export async function deleteTestimonial(_prev: ActionState, fd: FormData): Promise<ActionState> {
   await requireSession();
   const id = str(fd, "id");
-  if (!id) return;
+  if (!id) return { error: "Missing testimonial id." };
   try {
     await prisma.testimonial.delete({ where: { id } });
   } catch {
-    redirect("/admin/testimonials?error=delete");
+    return { error: "Could not delete the testimonial. It may have already been removed – refresh the list." };
   }
   revalidatePublic("testimonials");
   redirect("/admin/testimonials?deleted=1");

@@ -149,7 +149,7 @@ export function ContactForm({ contact }: { contact: SiteSettings["contact"] }) {
             <select
               id="projectType"
               name="projectType"
-              defaultValue=""
+              defaultValue={services[0] ?? ""}
               required
               aria-invalid={Boolean(errors.projectType)}
               aria-describedby={errors.projectType ? "projectType-error" : undefined}

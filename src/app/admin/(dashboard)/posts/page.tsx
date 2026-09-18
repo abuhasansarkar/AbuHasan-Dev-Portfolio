@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { Pencil, Plus, Trash2, X } from "lucide-react";
 import { deleteCategory, deletePost } from "@/app/actions/admin/posts";
 import { CategoryForm } from "@/components/admin/category-form";
-import { ConfirmButton } from "@/components/admin/confirm-button";
+import { DeleteForm } from "@/components/admin/delete-form";
 import { DataTable, Td, Th } from "@/components/admin/data-table";
 import { Flash } from "@/components/admin/flash";
 import { PageHeader } from "@/components/admin/page-header";
@@ -76,12 +76,9 @@ export default async function PostsPage() {
                         <Pencil />
                       </Link>
                     </Button>
-                    <form action={deletePost}>
-                      <input type="hidden" name="id" value={p.id} />
-                      <ConfirmButton variant="ghost" size="icon-sm" className="text-muted-foreground hover:text-destructive" aria-label={`Delete ${p.title}`} confirmText={`Delete "${p.title}"?`}>
-                        <Trash2 />
-                      </ConfirmButton>
-                    </form>
+                    <DeleteForm action={deletePost} id={p.id} ariaLabel={`Delete ${p.title}`} confirmText={`Delete "${p.title}"?`}>
+                      <Trash2 />
+                    </DeleteForm>
                   </div>
                 </Td>
               </tr>
@@ -98,12 +95,9 @@ export default async function PostsPage() {
             <li key={c.id} className="flex items-center gap-1 rounded-full border border-border pl-3 pr-1 text-sm">
               {c.name} <span className="text-xs text-muted-foreground tabular-nums">({c._count.posts})</span>
               {c._count.posts === 0 && (
-                <form action={deleteCategory}>
-                  <input type="hidden" name="id" value={c.id} />
-                  <ConfirmButton variant="ghost" size="icon-sm" className="size-7 text-muted-foreground hover:text-destructive" aria-label={`Delete category ${c.name}`} confirmText={`Delete category "${c.name}"?`}>
-                    <X className="size-3.5" />
-                  </ConfirmButton>
-                </form>
+                <DeleteForm action={deleteCategory} id={c.id} ariaLabel={`Delete category ${c.name}`} confirmText={`Delete category "${c.name}"?`} className="size-7 text-muted-foreground hover:text-destructive">
+                  <X className="size-3.5" />
+                </DeleteForm>
               )}
             </li>
           ))}

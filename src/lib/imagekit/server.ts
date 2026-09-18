@@ -3,33 +3,37 @@ import type { UploadOptions } from "imagekit/dist/libs/interfaces/UploadOptions"
 
 let imagekitInstance: ImageKit | null = null;
 
-export const DEFAULT_IMAGEKIT_CONFIG = {
-  urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT || "https://ik.imagekit.io/abuhasansarkar",
-  publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY || "public_Jwy2XiHu804qq+/UucO7RXtyh4I=",
-  privateKey: process.env.IMAGEKIT_PRIVATE_KEY || "private_JSzMpz1oQoGa5b+ftpU/szQ0dpk=",
-  folderName: process.env.IMAGEKIT_FOLDER_NAME || "Developer-Portfolio",
-  folderId: process.env.IMAGEKIT_FOLDER_ID || "6aa7dc41ead997d09ac1e888",
-  imagekitId: process.env.IMAGEKIT_ID || "abuhasansarkar",
-};
+/** Upload folder (not a secret). Endpoint and keys come from environment variables only. */
+export const IMAGEKIT_FOLDER_NAME = process.env.IMAGEKIT_FOLDER_NAME || "Developer-Portfolio";
 
 /**
  * Returns a server-side ImageKit instance configured with environment credentials.
+ * Throws when the required environment variables are missing – real credentials are
+ * never hardcoded as fallbacks. See .env.example for the required variables.
  */
 export function getImageKitServerClient(): ImageKit {
   if (imagekitInstance) return imagekitInstance;
 
-  const publicKey = process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY || DEFAULT_IMAGEKIT_CONFIG.publicKey;
-  const privateKey = process.env.IMAGEKIT_PRIVATE_KEY || DEFAULT_IMAGEKIT_CONFIG.privateKey;
-  const urlEndpoint = process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT || DEFAULT_IMAGEKIT_CONFIG.urlEndpoint;
+  const urlEndpoint = process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT;
+  const publicKey = process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY;
+  const privateKey = process.env.IMAGEKIT_PRIVATE_KEY;
 
-  if (!privateKey) {
-    throw new Error("IMAGEKIT_PRIVATE_KEY is missing from environment variables.");
+  const missing = [
+    !urlEndpoint && "NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT",
+    !publicKey && "NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY",
+    !privateKey && "IMAGEKIT_PRIVATE_KEY",
+  ].filter(Boolean);
+
+  if (missing.length > 0) {
+    throw new Error(
+      `ImageKit is not configured. Missing environment variables: ${missing.join(", ")}. See .env.example.`,
+    );
   }
 
   imagekitInstance = new ImageKit({
-    publicKey,
-    privateKey,
-    urlEndpoint,
+    urlEndpoint: urlEndpoint as string,
+    publicKey: publicKey as string,
+    privateKey: privateKey as string,
   });
 
   return imagekitInstance;
@@ -62,7 +66,7 @@ export interface ImageKitUploadResult {
  */
 export async function uploadToImageKit(params: ImageKitUploadParams): Promise<ImageKitUploadResult> {
   const client = getImageKitServerClient();
-  const folder = params.folder || `/${DEFAULT_IMAGEKIT_CONFIG.folderName.replace(/^\//, "")}`;
+  const folder = params.folder || `/${IMAGEKIT_FOLDER_NAME.replace(/^\//, "")}`;
 
   const uploadOptions: UploadOptions = {
     file: params.file,

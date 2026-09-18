@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { Pencil, Plus, Tag, Trash2 } from "lucide-react";
 import { deleteCategory } from "@/app/actions/admin/categories";
-import { ConfirmButton } from "@/components/admin/confirm-button";
+import { DeleteForm } from "@/components/admin/delete-form";
 import { DataTable, Td, Th } from "@/components/admin/data-table";
 import { Flash } from "@/components/admin/flash";
 import { PageHeader } from "@/components/admin/page-header";
@@ -84,22 +84,18 @@ export default async function CategoriesPage() {
                         <Pencil />
                       </Link>
                     </Button>
-                    <form action={deleteCategory}>
-                      <input type="hidden" name="id" value={cat.id} />
-                      <ConfirmButton
-                        variant="ghost"
-                        size="icon-sm"
-                        className="text-muted-foreground hover:text-destructive"
-                        aria-label={`Delete ${cat.name}`}
-                        confirmText={
-                          cat._count.posts > 0
-                            ? `"${cat.name}" has ${cat._count.posts} post(s). Deleting it will remove those posts' category. Continue?`
-                            : `Delete category "${cat.name}"?`
-                        }
-                      >
-                        <Trash2 />
-                      </ConfirmButton>
-                    </form>
+                    <DeleteForm
+                      action={deleteCategory}
+                      id={cat.id}
+                      ariaLabel={`Delete ${cat.name}`}
+                      confirmText={
+                        cat._count.posts > 0
+                          ? `"${cat.name}" has ${cat._count.posts} post(s). Deleting it will remove those posts' category. Continue?`
+                          : `Delete category "${cat.name}"?`
+                      }
+                    >
+                      <Trash2 />
+                    </DeleteForm>
                   </div>
                 </Td>
               </tr>

@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { requireSession } from "@/lib/auth/session";
+import type { ActionState } from "@/lib/admin/action-state";
 import { str, optStr } from "@/lib/admin/form-data";
 import { slugify } from "@/lib/utils";
 import { revalidatePublic } from "./revalidate";
@@ -40,16 +41,16 @@ export async function saveCategory(fd: FormData) {
   redirect("/admin/categories?saved=1");
 }
 
-export async function deleteCategory(fd: FormData) {
+export async function deleteCategory(_prev: ActionState, fd: FormData): Promise<ActionState> {
   await requireSession();
 
   const id = str(fd, "id");
-  if (!id) return;
+  if (!id) return { error: "Missing category id." };
 
   try {
     await prisma.blogCategory.delete({ where: { id } });
   } catch {
-    redirect("/admin/categories?error=delete");
+    return { error: "Could not delete the category. It may have already been removed – refresh the list." };
   }
 
   revalidatePublic("blog");

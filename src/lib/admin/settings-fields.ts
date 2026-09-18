@@ -15,6 +15,9 @@ const link = (path: string, label: string): FieldDef[] => [
   { path: `${path}.href`, label: `${label} link`, type: "text", hint: "Use #section for on-page anchors." },
 ];
 
+const STATS_HINT =
+  'One per line: value | label | numeric (optional, enables counting) | suffix (optional). Example: 4+ | Years Experience | 4 | +. Escape a literal "|" as "\\|".';
+
 export const settingsSections: SettingsSection[] = [
   {
     key: "profile",
@@ -58,7 +61,7 @@ export const settingsSections: SettingsSection[] = [
     key: "stats",
     title: "Stats",
     description: "Animated metrics. Keep claims realistic.",
-    fields: [{ path: "", label: "Stats", type: "stats", hint: "One per line: value | label | numeric (optional, enables counting) | suffix (optional). Example: 4+ | Years Experience | 4 | +" }],
+    fields: [{ path: "", label: "Stats", type: "stats", hint: STATS_HINT }],
   },
   {
     key: "social",
@@ -112,8 +115,13 @@ export const settingsSections: SettingsSection[] = [
 
 type Stat = { value: string; label: string; numeric?: number; suffix?: string; prefix?: string };
 
+/** Escape pipes so a round-trip through textToStats is lossless. */
+const escapePipe = (s: string) => s.replace(/\|/g, "\\|");
+
 export function statsToText(stats: Stat[]) {
-  return stats.map((s) => [s.value, s.label, s.numeric ?? "", s.suffix ?? ""].join(" | ").replace(/(\s\|\s)+$/, "")).join("\n");
+  return stats
+    .map((s) => [escapePipe(s.value), escapePipe(s.label), s.numeric ?? "", escapePipe(s.suffix ?? "")].join(" | ").replace(/(\s\|\s)+$/, ""))
+    .join("\n");
 }
 
 export function textToStats(text: string): Stat[] {
@@ -122,8 +130,19 @@ export function textToStats(text: string): Stat[] {
     .map((l) => l.trim())
     .filter(Boolean)
     .map((line) => {
-      const [value = "", label = "", numeric = "", suffix = ""] = line.split("|").map((s) => s.trim());
-      const n = Number(numeric);
-      return { value, label, ...(numeric && Number.isFinite(n) ? { numeric: n } : {}), ...(suffix ? { suffix } : {}) };
-    });
+      // Split on unescaped pipes only, then unescape "\|" back to "|".
+      const parts = line.split(/(?<!\\)\|/).map((s) => s.trim().replace(/\\\|/g, "|"));
+      const [value = "", label = "", numeric = "", suffix = ""] = parts;
+      // A stat needs at least a value and a label – skip incomplete lines
+      // instead of failing the whole settings save.
+      if (!value || !label) return null;
+      const parsed = numeric === "" ? Number.NaN : Number(numeric);
+      return {
+        value,
+        label,
+        ...(numeric !== "" && Number.isFinite(parsed) ? { numeric: parsed } : {}),
+        ...(suffix ? { suffix } : {}),
+      };
+    })
+    .filter((s): s is Stat => s !== null);
 }

@@ -39,14 +39,14 @@ export async function saveService(_prev: ActionState, fd: FormData): Promise<Act
   redirect("/admin/services?saved=1");
 }
 
-export async function deleteService(fd: FormData) {
+export async function deleteService(_prev: ActionState, fd: FormData): Promise<ActionState> {
   await requireSession();
   const id = str(fd, "id");
-  if (!id) return;
+  if (!id) return { error: "Missing service id." };
   try {
     await prisma.service.delete({ where: { id } });
   } catch {
-    redirect("/admin/services?error=delete");
+    return { error: "Could not delete the service. It may have already been removed – refresh the list." };
   }
   revalidatePublic("services");
   redirect("/admin/services?deleted=1");

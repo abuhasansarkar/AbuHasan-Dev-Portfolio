@@ -76,15 +76,15 @@ export async function saveProject(_prev: ActionState, fd: FormData): Promise<Act
   redirect("/admin/projects?saved=1");
 }
 
-export async function deleteProject(fd: FormData) {
+export async function deleteProject(_prev: ActionState, fd: FormData): Promise<ActionState> {
   await requireSession();
   const id = str(fd, "id");
-  if (!id) return;
+  if (!id) return { error: "Missing project id." };
   try {
     await prisma.project.delete({ where: { id } });
   } catch (err) {
     console.error("[admin/projects] delete failed:", err instanceof Error ? err.message : err);
-    redirect("/admin/projects?error=delete");
+    return { error: "Could not delete the project. It may have already been removed – refresh the list." };
   }
   revalidatePublic("projects");
   redirect("/admin/projects?deleted=1");

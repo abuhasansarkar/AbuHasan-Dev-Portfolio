@@ -32,7 +32,7 @@ export async function savePost(_prev: ActionState, fd: FormData): Promise<Action
     coverImage: str(fd, "coverImage"),
     author: str(fd, "author") || "AbuHasan",
     publishedAt,
-    readingTime: optInt(fd, "readingTime") ?? (content ? estimateReadingTime(content) : undefined),
+    readingTime: optInt(fd, "readingTime") ?? estimateReadingTime(content),
     seoTitle: optStr(fd, "seoTitle"),
     seoDescription: optStr(fd, "seoDescription"),
     ogImage: str(fd, "ogImage"),
@@ -70,15 +70,15 @@ export async function savePost(_prev: ActionState, fd: FormData): Promise<Action
   redirect("/admin/posts?saved=1");
 }
 
-export async function deletePost(fd: FormData) {
+export async function deletePost(_prev: ActionState, fd: FormData): Promise<ActionState> {
   await requireSession();
   const id = str(fd, "id");
-  if (!id) return;
+  if (!id) return { error: "Missing post id." };
   try {
     await prisma.blogPost.delete({ where: { id } });
   } catch (err) {
     console.error("[admin/posts] delete failed:", err instanceof Error ? err.message : err);
-    redirect("/admin/posts?error=delete");
+    return { error: "Could not delete the post. It may have already been removed – refresh the list." };
   }
   revalidatePublic("posts");
   redirect("/admin/posts?deleted=1");
@@ -101,13 +101,20 @@ export async function createCategory(_prev: ActionState, fd: FormData): Promise<
   return { ok: true, message: `Category “${parsed.data.name}” created.` };
 }
 
-export async function deleteCategory(fd: FormData) {
+export async function deleteCategory(_prev: ActionState, fd: FormData): Promise<ActionState> {
   await requireSession();
   const id = str(fd, "id");
-  if (!id) return;
+  if (!id) return { error: "Missing category id." };
   const inUse = await prisma.blogPost.count({ where: { categoryId: id } });
-  if (inUse > 0) redirect("/admin/posts?error=category-in-use");
-  await prisma.blogCategory.delete({ where: { id } }).catch(() => redirect("/admin/posts?error=delete"));
+  if (inUse > 0) {
+    return { error: "This category is still used by one or more posts. Move those posts to another category first." };
+  }
+  try {
+    await prisma.blogCategory.delete({ where: { id } });
+  } catch (err) {
+    console.error("[admin/posts] category delete failed:", err instanceof Error ? err.message : err);
+    return { error: "Could not delete the category." };
+  }
   revalidatePublic("posts");
   redirect("/admin/posts?deleted=1");
 }

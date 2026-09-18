@@ -34,7 +34,7 @@ export async function submitContact(_prev: ContactState, formData: FormData): Pr
 
   const h = await headers();
   const ip = (h.get("x-forwarded-for") ?? "").split(",")[0]?.trim() || h.get("x-real-ip") || "unknown";
-  const limit = rateLimit(`contact:${ip}`, CONTACT_RATE_LIMIT);
+  const limit = await rateLimit(`contact:${ip}`, CONTACT_RATE_LIMIT);
   if (!limit.ok) {
     return { status: "error", message: `Too many messages from this connection. Please try again in about ${Math.ceil(limit.retryAfterSeconds / 60)} minutes.` };
   }

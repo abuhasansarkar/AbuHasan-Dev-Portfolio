@@ -52,8 +52,10 @@ export const publicEnv = {
   googleSiteVerification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "",
   metaPixelId: process.env.NEXT_PUBLIC_META_PIXEL_ID || "",
   imagekit: {
-    urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT || "https://ik.imagekit.io/abuhasansarkar",
-    publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY || "public_Jwy2XiHu804qq+/UucO7RXtyh4I=",
+    // Browser-safe values only. No credentials are hardcoded – these must be
+    // provided via NEXT_PUBLIC_* environment variables (see .env.example).
+    urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT || "",
+    publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY || "",
     folderName: process.env.IMAGEKIT_FOLDER_NAME || "Developer-Portfolio",
   },
 } as const;

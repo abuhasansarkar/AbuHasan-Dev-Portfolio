@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { deleteTestimonial } from "@/app/actions/admin/testimonials";
-import { ConfirmButton } from "@/components/admin/confirm-button";
+import { DeleteForm } from "@/components/admin/delete-form";
 import { DataTable, Td, Th } from "@/components/admin/data-table";
 import { Flash } from "@/components/admin/flash";
 import { PageHeader } from "@/components/admin/page-header";
@@ -70,12 +70,9 @@ export default async function TestimonialsPage() {
                         <Pencil />
                       </Link>
                     </Button>
-                    <form action={deleteTestimonial}>
-                      <input type="hidden" name="id" value={t.id} />
-                      <ConfirmButton variant="ghost" size="icon-sm" className="text-muted-foreground hover:text-destructive" aria-label={`Delete testimonial from ${t.name}`} confirmText={`Delete the testimonial from ${t.name}?`}>
-                        <Trash2 />
-                      </ConfirmButton>
-                    </form>
+                    <DeleteForm action={deleteTestimonial} id={t.id} ariaLabel={`Delete testimonial from ${t.name}`} confirmText={`Delete the testimonial from ${t.name}?`}>
+                      <Trash2 />
+                    </DeleteForm>
                   </div>
                 </Td>
               </tr>

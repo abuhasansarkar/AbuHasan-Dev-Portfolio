@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { deleteService } from "@/app/actions/admin/services";
-import { ConfirmButton } from "@/components/admin/confirm-button";
+import { DeleteForm } from "@/components/admin/delete-form";
 import { DataTable, Td, Th } from "@/components/admin/data-table";
 import { Flash } from "@/components/admin/flash";
 import { PageHeader } from "@/components/admin/page-header";
@@ -69,12 +69,9 @@ export default async function ServicesPage() {
                         <Pencil />
                       </Link>
                     </Button>
-                    <form action={deleteService}>
-                      <input type="hidden" name="id" value={s.id} />
-                      <ConfirmButton variant="ghost" size="icon-sm" className="text-muted-foreground hover:text-destructive" aria-label={`Delete ${s.title}`} confirmText={`Delete "${s.title}"?`}>
-                        <Trash2 />
-                      </ConfirmButton>
-                    </form>
+                    <DeleteForm action={deleteService} id={s.id} ariaLabel={`Delete ${s.title}`} confirmText={`Delete "${s.title}"?`}>
+                      <Trash2 />
+                    </DeleteForm>
                   </div>
                 </Td>
               </tr>

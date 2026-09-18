@@ -25,7 +25,7 @@ export async function login(_prev: ActionState, formData: FormData): Promise<Act
 
   const h = await headers();
   const ip = (h.get("x-forwarded-for") ?? "").split(",")[0]?.trim() || h.get("x-real-ip") || "unknown";
-  const limit = rateLimit(`login:${ip}`, LOGIN_RATE_LIMIT);
+  const limit = await rateLimit(`login:${ip}`, LOGIN_RATE_LIMIT);
   if (!limit.ok) {
     return { error: `Too many sign-in attempts. Try again in ${Math.ceil(limit.retryAfterSeconds / 60)} minute(s).` };
   }

@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { prisma } from "@/lib/db";
 import { CONTACT_RATE_LIMIT, rateLimit } from "@/lib/auth/rate-limit";
 import { contactFormSchema, fieldErrorsFromZod, type ContactFieldErrors } from "@/lib/validation/contact";
+import { sendContactNotification, sendContactAutoReply } from "@/lib/email";
 
 export type ContactState = {
   status: "idle" | "success" | "error";
@@ -59,6 +60,27 @@ export async function submitContact(_prev: ContactState, formData: FormData): Pr
         userAgent: h.get("user-agent")?.slice(0, 255) ?? null,
       },
     });
+
+    // Send email notifications (non-blocking - don't fail the request if email fails)
+    const emailData = {
+      name: parsed.data.name,
+      email: parsed.data.email,
+      company: parsed.data.company || undefined,
+      projectType: parsed.data.projectType,
+      budget: parsed.data.budget,
+      timeline: parsed.data.timeline,
+      projectLink: parsed.data.projectLink || undefined,
+      message: parsed.data.message,
+    };
+
+    // Fire and forget - don't await to avoid slowing down the response
+    sendContactNotification(emailData).catch((err) => 
+      console.error("[contact] Failed to send notification email:", err)
+    );
+    sendContactAutoReply(emailData).catch((err) => 
+      console.error("[contact] Failed to send auto-reply email:", err)
+    );
+
     return { status: "success", message: "Thanks! Your message has been received. I usually reply within one business day." };
   } catch (err) {
     console.error("[contact] failed to store submission:", err instanceof Error ? err.message : err);

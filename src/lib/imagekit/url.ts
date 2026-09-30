@@ -1,4 +1,4 @@
-import { publicEnv } from "@/lib/env";
+import { publicEnv } from "@/lib/public-env";
 
 export interface ImageKitTransformOptions {
   width?: number | string;

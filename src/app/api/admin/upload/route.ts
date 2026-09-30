@@ -3,16 +3,30 @@ import { randomUUID } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { getSession } from "@/lib/auth/session";
+import { UPLOAD_RATE_LIMIT, rateLimit } from "@/lib/auth/rate-limit";
 
 export const runtime = "nodejs";
 
 const MAX_BYTES = 5 * 1024 * 1024;
-const ALLOWED = new Set(["image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml", "image/avif"]);
-const EXT: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/gif": "gif", "image/svg+xml": "svg", "image/avif": "avif" };
+/**
+ * SVG is deliberately NOT allowed: an uploaded SVG can execute script when opened
+ * directly from the origin. If you ever need SVG uploads, sanitise them first.
+ */
+const ALLOWED = new Set(["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"]);
+const EXT: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/gif": "gif", "image/avif": "avif" };
 
 export async function POST(request: Request) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  // Abuse guard: an authenticated admin should never need more than a few uploads a minute.
+  const limit = await rateLimit(`upload:${session.sub}`, UPLOAD_RATE_LIMIT);
+  if (!limit.ok) {
+    return NextResponse.json(
+      { error: `Too many uploads. Try again in ${limit.retryAfterSeconds}s.` },
+      { status: 429 },
+    );
+  }
 
   // Same-origin check (CSRF hardening for the multipart endpoint)
   const origin = request.headers.get("origin");
@@ -38,6 +52,7 @@ export async function POST(request: Request) {
         file: buffer,
         fileName: filename,
         folder: customFolder,
+        mimeType: file.type,
         tags: ["portfolio", "admin-upload"],
       });
 

@@ -97,6 +97,7 @@ async function redisFixedWindow(key: string, { limit, windowMs }: RateLimitOptio
 /* ---------- Public API ---------- */
 
 let redisDisabled = false;
+let warnedMissingRedis = false;
 
 export async function rateLimit(key: string, options: RateLimitOptions): Promise<RateLimitResult> {
   if (redisEnabled && !redisDisabled) {
@@ -111,8 +112,19 @@ export async function rateLimit(key: string, options: RateLimitOptions): Promise
       );
     }
   }
+
+  if (process.env.NODE_ENV === "production" && !warnedMissingRedis) {
+    warnedMissingRedis = true;
+    console.warn(
+      "[rate-limit] UPSTASH_REDIS_REST_URL/TOKEN are not configured. Rate limits are enforced " +
+        "per server instance only, so they are weaker on serverless/multi-instance deployments. " +
+        "See .env.example.",
+    );
+  }
+
   return memoryRateLimit(key, options);
 }
 
 export const LOGIN_RATE_LIMIT: RateLimitOptions = { limit: 5, windowMs: 15 * 60 * 1000 };
 export const CONTACT_RATE_LIMIT: RateLimitOptions = { limit: 5, windowMs: 60 * 60 * 1000 };
+export const UPLOAD_RATE_LIMIT: RateLimitOptions = { limit: 30, windowMs: 60 * 1000 };

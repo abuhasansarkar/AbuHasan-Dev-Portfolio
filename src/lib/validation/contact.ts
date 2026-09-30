@@ -10,6 +10,11 @@ export const contactFormSchema = z.object({
   projectLink: z.string().trim().max(250).optional().or(z.literal("")),
   message: z.string().trim().min(10, "Please tell us a little more about your project (at least 10 characters)").max(3000, "Please keep it under 3000 characters"),
   /**
+   * Cloudflare Turnstile token. Optional here (the challenge only renders when
+   * configured); the server action decides whether a missing token is acceptable.
+   */
+  turnstileToken: z.string().max(4096).optional(),
+  /**
    * Honeypot: hidden from humans, must stay empty. Deliberately accepts any
    * value here so bots that fill it do NOT get a validation error – the server
    * action silently discards submissions where this field is filled.

@@ -2,6 +2,8 @@
 
 Premium, animated, single-page portfolio for **AbuHasan** – Full-Stack Web Developer · WordPress Developer · UI/UX Designer.
 
+**Live site:** update this line with your real production URL (e.g. `https://your-domain.com`) before publishing.
+
 Built as a real, deployable application: dynamic portfolio, blog, testimonials and services managed from a secure admin dashboard, contact submissions stored in PostgreSQL, complete SEO, GSAP + Three.js hero experience.
 
 ---
@@ -31,13 +33,13 @@ Built as a real, deployable application: dynamic portfolio, blog, testimonials a
 ### 2. Install
 
 ```bash
-git clone https://gitlab.com/abuhasan-dev/portfolio.git
-cd portfolio
+git clone https://github.com/abuhasansarkar/AbuHasan-Dev-Portfolio.git
+cd AbuHasan-Dev-Portfolio
 npm install
 cp .env.example .env
 ```
 
-Open `.env` and set `AUTH_SECRET` (e.g. `openssl rand -base64 32`).
+Open `.env` and set `AUTH_SECRET` (e.g. `openssl rand -base64 32`) plus your own `ADMIN_EMAIL` / `ADMIN_PASSWORD` for the first-run admin bootstrap.
 
 ### 3. Database
 
@@ -56,14 +58,19 @@ npm run dev
 - Site: http://localhost:3000
 - Admin: http://localhost:3000/admin
 
-### Demo admin login (development only)
+### First admin account (development only)
+
+There are **no shared demo credentials**. The seed script creates the first admin from your
+own `.env` values:
 
 ```
-Email:    admin@example.com
-Password: ChangeThisImmediately123!
+ADMIN_EMAIL=...      # your email
+ADMIN_PASSWORD=...   # your password (min 8 chars, use something long & unique)
 ```
 
-These values come from `ADMIN_EMAIL` / `ADMIN_PASSWORD` in `.env` and are only used to create the **first** admin account. **Change them before any production deployment.** The password is never stored in plain text; the seed script and the first-login bootstrap hash it with bcrypt.
+These are only used to bootstrap the **first** admin account. The password is never stored in
+plain text — the seed script and first-login bootstrap hash it with bcrypt. For production,
+use a different email/password pair than your local setup.
 
 ---
 

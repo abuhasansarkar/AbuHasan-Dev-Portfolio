@@ -1,7 +1,7 @@
 "use client";
 
 import { ImageKitProvider as IKProvider } from "@imagekit/next";
-import { publicEnv } from "@/lib/env";
+import { publicEnv } from "@/lib/public-env";
 
 export interface ImageKitProviderProps {
   children: React.ReactNode;

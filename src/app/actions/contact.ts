@@ -1,10 +1,12 @@
 "use server";
 
 import { headers } from "next/headers";
+import { after } from "next/server";
 import { prisma } from "@/lib/db";
 import { CONTACT_RATE_LIMIT, rateLimit } from "@/lib/auth/rate-limit";
 import { contactFormSchema, fieldErrorsFromZod, type ContactFieldErrors } from "@/lib/validation/contact";
 import { sendContactNotification, sendContactAutoReply } from "@/lib/email";
+import { verifyTurnstileToken } from "@/lib/turnstile";
 
 export type ContactState = {
   status: "idle" | "success" | "error";
@@ -40,6 +42,15 @@ export async function submitContact(_prev: ContactState, formData: FormData): Pr
     return { status: "error", message: `Too many messages from this connection. Please try again in about ${Math.ceil(limit.retryAfterSeconds / 60)} minutes.` };
   }
 
+  // Cloudflare Turnstile (no-op unless TURNSTILE_SECRET_KEY is configured)
+  const captcha = await verifyTurnstileToken(
+    String(formData.get("turnstileToken") ?? "") || undefined,
+    ip || undefined,
+  );
+  if (!captcha.ok) {
+    return { status: "error", message: captcha.error ?? "Verification failed. Please try again." };
+  }
+
   try {
     const metaParts = [];
     if (parsed.data.company) metaParts.push(`Company: ${parsed.data.company}`);
@@ -73,13 +84,18 @@ export async function submitContact(_prev: ContactState, formData: FormData): Pr
       message: parsed.data.message,
     };
 
-    // Fire and forget - don't await to avoid slowing down the response
-    sendContactNotification(emailData).catch((err) => 
-      console.error("[contact] Failed to send notification email:", err)
-    );
-    sendContactAutoReply(emailData).catch((err) => 
-      console.error("[contact] Failed to send auto-reply email:", err)
-    );
+    // Send email notifications AFTER the response is flushed (Next.js `after`), so the
+    // visitor never waits on Brevo while delivery is still guaranteed to be attempted.
+    after(async () => {
+      await Promise.all([
+        sendContactNotification(emailData).catch((err) =>
+          console.error("[contact] Failed to send notification email:", err),
+        ),
+        sendContactAutoReply(emailData).catch((err) =>
+          console.error("[contact] Failed to send auto-reply email:", err),
+        ),
+      ]);
+    });
 
     return { status: "success", message: "Thanks! Your message has been received. I usually reply within one business day." };
   } catch (err) {

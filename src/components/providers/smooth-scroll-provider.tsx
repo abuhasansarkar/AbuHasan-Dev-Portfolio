@@ -17,6 +17,11 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
     // Only instantiate on client
     if (typeof window === "undefined") return;
 
+    // Respect the OS-level reduced-motion preference (WCAG 2.3.3) and keep the admin
+    // dashboard on native scrolling so tables, modals and forms behave predictably.
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion || window.location.pathname.startsWith("/admin")) return;
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // smooth exponential out

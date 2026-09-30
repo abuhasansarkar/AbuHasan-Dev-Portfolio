@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { AUTH_SECRET_MIN_LENGTH } from "@/lib/auth/token";
 
 /**
  * Server-only environment variables.
@@ -6,7 +7,10 @@ import { z } from "zod";
  */
 const serverSchema = z.object({
   DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
-  AUTH_SECRET: z.string().min(16, "AUTH_SECRET must be at least 16 characters"),
+  DATABASE_URL_UNPOOLED: z.string().optional(),
+  AUTH_SECRET: z
+    .string()
+    .min(AUTH_SECRET_MIN_LENGTH, `AUTH_SECRET must be at least ${AUTH_SECRET_MIN_LENGTH} characters`),
   ADMIN_EMAIL: z.string().email().optional(),
   ADMIN_PASSWORD: z.string().min(8).optional(),
   ADMIN_NAME: z.string().optional(),
@@ -15,6 +19,14 @@ const serverSchema = z.object({
   IMAGEKIT_ID: z.string().optional(),
   IMAGEKIT_FOLDER_NAME: z.string().optional().default("Developer-Portfolio"),
   IMAGEKIT_FOLDER_ID: z.string().optional(),
+  BREVO_API_KEY: z.string().optional(),
+  BREVO_SENDER_EMAIL: z.string().email().optional().or(z.literal("")),
+  BREVO_SENDER_NAME: z.string().optional(),
+  TURNSTILE_SECRET_KEY: z.string().optional(),
+  /** Sentry error tracking DSN. Optional – SDK stays disabled without it. */
+  SENTRY_DSN: z.string().optional(),
+  UPSTASH_REDIS_REST_URL: z.string().optional(),
+  UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
 });
 
@@ -24,6 +36,7 @@ export function getServerEnv() {
   if (cached) return cached;
   const parsed = serverSchema.safeParse({
     DATABASE_URL: process.env.DATABASE_URL,
+    DATABASE_URL_UNPOOLED: process.env.DATABASE_URL_UNPOOLED || undefined,
     AUTH_SECRET: process.env.AUTH_SECRET,
     ADMIN_EMAIL: process.env.ADMIN_EMAIL || undefined,
     ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || undefined,
@@ -33,6 +46,13 @@ export function getServerEnv() {
     IMAGEKIT_ID: process.env.IMAGEKIT_ID || undefined,
     IMAGEKIT_FOLDER_NAME: process.env.IMAGEKIT_FOLDER_NAME || undefined,
     IMAGEKIT_FOLDER_ID: process.env.IMAGEKIT_FOLDER_ID || undefined,
+    BREVO_API_KEY: process.env.BREVO_API_KEY || undefined,
+    BREVO_SENDER_EMAIL: process.env.BREVO_SENDER_EMAIL || undefined,
+    BREVO_SENDER_NAME: process.env.BREVO_SENDER_NAME || undefined,
+    TURNSTILE_SECRET_KEY: process.env.TURNSTILE_SECRET_KEY || undefined,
+    SENTRY_DSN: process.env.SENTRY_DSN || undefined,
+    UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL || undefined,
+    UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN || undefined,
     NODE_ENV: process.env.NODE_ENV,
   });
 
@@ -46,16 +66,5 @@ export function getServerEnv() {
 }
 
 /** Public (browser-safe) configuration. Only NEXT_PUBLIC_* values belong here. */
-export const publicEnv = {
-  siteUrl: (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(/\/$/, ""),
-  gaMeasurementId: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "",
-  googleSiteVerification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "",
-  metaPixelId: process.env.NEXT_PUBLIC_META_PIXEL_ID || "",
-  imagekit: {
-    // Browser-safe values only. No credentials are hardcoded – these must be
-    // provided via NEXT_PUBLIC_* environment variables (see .env.example).
-    urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT || "",
-    publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY || "",
-    folderName: process.env.IMAGEKIT_FOLDER_NAME || "Developer-Portfolio",
-  },
-} as const;
+/** Re-export so existing server-side imports keep working. */
+export { publicEnv } from "./public-env";

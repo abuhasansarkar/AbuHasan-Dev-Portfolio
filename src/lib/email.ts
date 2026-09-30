@@ -1,11 +1,19 @@
+import "server-only";
+
 import { BrevoClient } from "@getbrevo/brevo";
 
 /**
  * Brevo email client configuration
- * Uses the Brevo API v3 SDK for sending transactional emails
+ * Uses the Brevo API v3 SDK for sending transactional emails.
+ * The API key is a server-only secret – never import this module from a client component.
  */
 const brevoApiKey = process.env.BREVO_API_KEY;
-const senderEmail = process.env.BREVO_SENDER_EMAIL || "abuhasansarkar2@gmail.com";
+/**
+ * Verified Brevo sender (SPF/DKIM must be configured for the domain – see .env.example).
+ * No hardcoded fallback: if this is missing, sending stays disabled rather than risking
+ * emails bouncing from an unverified address.
+ */
+const senderEmail = process.env.BREVO_SENDER_EMAIL || "";
 const senderName = process.env.BREVO_SENDER_NAME || "AbuHasan Portfolio";
 
 let brevoClient: BrevoClient | null = null;
@@ -16,8 +24,13 @@ function getBrevoClient(): BrevoClient | null {
     return null;
   }
 
+  if (!senderEmail) {
+    console.warn("[email] BREVO_SENDER_EMAIL not configured - email notifications disabled");
+    return null;
+  }
+
   if (!brevoClient) {
-    brevoClient = new BrevoClient({ auth: { apiKey: brevoApiKey } });
+    brevoClient = new BrevoClient({ apiKey: brevoApiKey });
   }
 
   return brevoClient;
@@ -45,14 +58,6 @@ export async function sendContactNotification(data: ContactFormData): Promise<{ 
   }
 
   try {
-    const metaParts = [];
-    if (data.company) metaParts.push(`Company: ${data.company}`);
-    if (data.timeline) metaParts.push(`Timeline: ${data.timeline}`);
-    if (data.projectLink) metaParts.push(`Project Link: ${data.projectLink}`);
-    if (data.budget) metaParts.push(`Budget: ${data.budget}`);
-
-    const metaInfo = metaParts.length > 0 ? metaParts.join(" | ") : "No additional info";
-
     const htmlContent = `
       <!DOCTYPE html>
       <html>

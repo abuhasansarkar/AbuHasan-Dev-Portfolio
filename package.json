@@ -16,7 +16,6 @@
     "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset --force",
-    "test:imagekit": "tsx --env-file=.env scratch_test_ik.ts",
     "postinstall": "prisma generate"
   },
   "prisma": {
@@ -26,8 +25,6 @@
     "@getbrevo/brevo": "^6.0.3",
     "@imagekit/next": "^2.1.5",
     "@imagekit/nodejs": "^7.11.0",
-    "@neon/config": "^1.4.2",
-    "@neon/env": "^1.3.2",
     "@prisma/client": "^6.19.3",
     "@radix-ui/react-accordion": "^1.2.3",
     "@radix-ui/react-dialog": "^1.1.6",
@@ -35,19 +32,16 @@
     "@radix-ui/react-label": "^2.1.2",
     "@radix-ui/react-select": "^2.1.6",
     "@radix-ui/react-slot": "^1.1.2",
-    "@radix-ui/react-switch": "^1.1.3",
-    "@radix-ui/react-tabs": "^1.1.3",
-    "@radix-ui/react-tooltip": "^1.1.8",
     "@react-three/drei": "^10.0.6",
     "@react-three/fiber": "^9.1.2",
-    "@vercel/blob": "^0.27.3",
+    "@sentry/nextjs": "^11.1.0",
+    "@vercel/blob": "^2.8.0",
     "bcryptjs": "^3.0.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.6.3",
     "gsap": "^3.12.7",
     "highlight.js": "^11.11.1",
-    "imagekit": "^6.0.0",
     "jose": "^6.0.10",
     "lenis": "^1.3.26",
     "lucide-react": "^0.487.0",
@@ -65,9 +59,12 @@
   },
   "overrides": {
     "react": "$react",
-    "react-dom": "$react-dom"
+    "react-dom": "$react-dom",
+    "postcss": "^8.5.28",
+    "deepmerge-ts": "^8.0.0"
   },
   "devDependencies": {
+    "@neon/config": "^1.4.2",
     "@tailwindcss/postcss": "^4.1.3",
     "@types/node": "^22.14.0",
     "@types/react": "~19.2.0",

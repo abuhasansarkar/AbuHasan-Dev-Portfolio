@@ -41,4 +41,12 @@ prisma/*.db-journal
 # local uploads (development only)
 public/uploads/*
 !public/uploads/.gitkeep
+
+# agent/worktree and scratch output (never commit these)
+.kilo/
+*.log
+prod*.log
+
+# Neon CLI state (contains project/branch ids)
 .neon
+

@@ -10,6 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Magnetic } from "@/components/animations/magnetic";
 import { contactFormSchema, fieldErrorsFromZod, type ContactFieldErrors } from "@/lib/validation/contact";
 import type { SiteSettings } from "@/lib/settings/schema";
+import { publicEnv } from "@/lib/public-env";
+import { TurnstileWidget } from "@/components/contact/turnstile-widget";
 import { cn } from "@/lib/utils";
 
 const initial: ContactState = { status: "idle" };
@@ -44,6 +46,7 @@ export function ContactForm({ contact }: { contact: SiteSettings["contact"] }) {
 
   const [selectedBudget, setSelectedBudget] = useState<string>(budgetRanges[1] ?? budgetRanges[0] ?? "Flexible / Discussion");
   const [selectedTimeline, setSelectedTimeline] = useState<string>(timelineOptions[1] ?? "2 – 4 weeks");
+  const [turnstileToken, setTurnstileToken] = useState("");
 
   const errors = { ...clientErrors, ...(state.errors ?? {}) };
 
@@ -102,6 +105,7 @@ export function ContactForm({ contact }: { contact: SiteSettings["contact"] }) {
       {/* Hidden inputs for interactive pill pickers */}
       <input type="hidden" name="budget" value={selectedBudget} />
       <input type="hidden" name="timeline" value={selectedTimeline} />
+      <input type="hidden" name="turnstileToken" value={turnstileToken} />
 
       {/* Full Name & Email Row */}
       <div className="grid gap-5 sm:grid-cols-2">
@@ -149,7 +153,7 @@ export function ContactForm({ contact }: { contact: SiteSettings["contact"] }) {
             <select
               id="projectType"
               name="projectType"
-              defaultValue={services[0] ?? ""}
+              defaultValue=""
               required
               aria-invalid={Boolean(errors.projectType)}
               aria-describedby={errors.projectType ? "projectType-error" : undefined}
@@ -260,6 +264,11 @@ export function ContactForm({ contact }: { contact: SiteSettings["contact"] }) {
           {state.message}
         </p>
       )}
+
+      {/* Cloudflare Turnstile (renders only when a site key is configured) */}
+      {publicEnv.turnstileSiteKey ? (
+        <TurnstileWidget siteKey={publicEnv.turnstileSiteKey} onTokenChange={setTurnstileToken} />
+      ) : null}
 
       {/* Submit Area: Response Time Guarantee + Button */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2">

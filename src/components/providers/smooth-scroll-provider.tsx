@@ -52,17 +52,33 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
     // Also refresh after a longer delay for slow-loading fonts/images
     const longTimeout = setTimeout(handleRefresh, 2000);
 
-    // Intercept internal hash links for butter-smooth scroll
+    // Intercept internal hash links for butter-smooth scroll.
+    // Supports both "#section" and root-absolute "/#section" (used by navLinks
+    // so the same anchors work from /work/[slug] and /blog/[slug]).
     const handleAnchorClick = (e: MouseEvent) => {
       const target = (e.target as HTMLElement).closest("a");
       if (!target) return;
       const href = target.getAttribute("href");
-      if (href && href.startsWith("#") && href.length > 1) {
-        const targetEl = document.querySelector(href);
-        if (targetEl) {
-          e.preventDefault();
-          lenis.scrollTo(targetEl as HTMLElement, { offset: -30, duration: 1.4 });
-        }
+      if (!href || target.target === "_blank" || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+      let selector: string | null = null;
+      if (href.startsWith("#") && href.length > 1) {
+        selector = href;
+      } else if (href.startsWith("/#") && href.length > 2 && window.location.pathname === "/") {
+        // Same-page root-absolute anchor: smooth-scroll instead of a full navigation.
+        selector = href.slice(1);
+      }
+      if (!selector) return;
+
+      let targetEl: Element | null = null;
+      try {
+        targetEl = document.querySelector(selector);
+      } catch {
+        return; // malformed selector (e.g. hash deep-links like #project=slug)
+      }
+      if (targetEl) {
+        e.preventDefault();
+        lenis.scrollTo(targetEl as HTMLElement, { offset: -30, duration: 1.4 });
       }
     };
     document.addEventListener("click", handleAnchorClick);

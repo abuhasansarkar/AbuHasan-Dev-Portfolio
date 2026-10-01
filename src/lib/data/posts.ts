@@ -27,3 +27,19 @@ export const getBlogCategories = unstable_cache(
   ["blog-categories"],
   { tags: [TAGS.posts], revalidate: 3600 },
 );
+
+/** Single published post for the crawlable `/blog/[slug]` route. */
+export const getPublishedPostBySlug = (slug: string) =>
+  unstable_cache(
+    async () =>
+      safeQuery<PostWithCategory | null>(
+        () =>
+          prisma.blogPost.findFirst({
+            where: { slug, status: "PUBLISHED", publishedAt: { lte: new Date() } },
+            include: { category: true },
+          }),
+        null,
+      ),
+    ["post-by-slug", slug],
+    { tags: [TAGS.posts], revalidate: 3600 },
+  )();

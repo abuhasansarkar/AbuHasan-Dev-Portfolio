@@ -61,6 +61,7 @@ export function PostOverlay({ post, onClose, related, onOpen }: Props) {
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: "3%", opacity: 0 }}
                 transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                data-lenis-prevent
                 className="fixed inset-0 z-[70] overflow-y-auto bg-background focus:outline-none"
               >
                 <div className="sticky top-0 z-10 border-b border-border/70 bg-background/80 backdrop-blur-xl">

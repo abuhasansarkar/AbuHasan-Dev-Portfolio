@@ -59,7 +59,8 @@ export function MobileMenu({ open, onClose, links, ctaLabel, activeHref }: Mobil
           initial="hidden"
           animate="visible"
           exit="exit"
-          className="fixed inset-0 z-40 flex flex-col bg-background/95 backdrop-blur-2xl grain lg:hidden"
+          data-lenis-prevent
+          className="fixed inset-0 z-40 flex flex-col overflow-y-auto bg-background/95 backdrop-blur-2xl grain lg:hidden"
         >
           {/* Subtle ambient light orb */}
           <div className="pointer-events-none absolute -top-20 -right-20 size-80 rounded-full bg-accent/15 blur-3xl" aria-hidden />
@@ -97,7 +98,8 @@ export function MobileMenu({ open, onClose, links, ctaLabel, activeHref }: Mobil
               <div className="flex items-center justify-between gap-4">
                 <Magnetic strength={0.2} className="flex-1">
                   <Button asChild variant="accent" size="lg" className="w-full shadow-[0_0_24px_-4px_hsl(var(--accent)/0.4)]" data-cursor="cta">
-                    <a href="#contact" onClick={onClose}>
+                    {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- plain anchor so the Lenis smooth-scroll provider can intercept it on `/` */}
+                    <a href="/#contact" onClick={onClose}>
                       {ctaLabel}
                     </a>
                   </Button>

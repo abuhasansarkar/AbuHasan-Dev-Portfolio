@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useRef, useState } from "react";
 import { ArrowUpRight, ExternalLink } from "lucide-react";
 import type { ProjectWithImages } from "@/lib/data/projects";
@@ -20,6 +21,14 @@ type ProjectCardProps = {
 export function ProjectCard({ project, index, wide, onOpen, className }: ProjectCardProps) {
   const ref = useRef<HTMLElement>(null);
   const [imgError, setImgError] = useState(false);
+  const detailHref = `/work/${project.slug}`;
+
+  /** JS overlay handles the click (instant case study); href keeps SEO + no-JS working. */
+  const interceptOpen = (e: React.MouseEvent) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return; // let new-tab work
+    e.preventDefault();
+    onOpen();
+  };
 
   // Subtle card tilt following the pointer (desktop only via pointer events on hover-capable devices)
   const onMove = (e: React.PointerEvent) => {
@@ -45,9 +54,9 @@ export function ProjectCard({ project, index, wide, onOpen, className }: Project
       onPointerLeave={onLeave}
       className={cn("group relative flex flex-col [perspective:1200px]", wide ? "lg:col-span-7" : "lg:col-span-5", className)}
     >
-      <button
-        type="button"
-        onClick={onOpen}
+      <Link
+        href={detailHref}
+        onClick={interceptOpen}
         data-cursor="project"
         aria-label={`Open case study: ${project.title}`}
         className="relative block w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-3xl"
@@ -77,7 +86,7 @@ export function ProjectCard({ project, index, wide, onOpen, className }: Project
             <ArrowUpRight className="size-5" />
           </span>
         </div>
-      </button>
+      </Link>
 
       <div className="mt-6 flex flex-col gap-3.5 px-1">
         <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground font-medium">
@@ -93,9 +102,9 @@ export function ProjectCard({ project, index, wide, onOpen, className }: Project
         </div>
         <div className="flex items-start justify-between gap-6">
           <h3 className="font-display text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-            <button type="button" onClick={onOpen} className="link-underline text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm hover:text-accent transition-colors">
+            <Link href={detailHref} onClick={interceptOpen} className="link-underline text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm hover:text-accent transition-colors">
               {project.title}
-            </button>
+            </Link>
           </h3>
         </div>
         <p className="max-w-xl text-sm leading-relaxed text-muted-foreground md:text-base">{project.excerpt}</p>
@@ -107,10 +116,10 @@ export function ProjectCard({ project, index, wide, onOpen, className }: Project
           ))}
         </div>
         <div className="mt-2 flex flex-wrap items-center gap-5 text-sm font-semibold">
-          <button type="button" onClick={onOpen} className="inline-flex items-center gap-1.5 text-accent transition-all hover:text-accent/80 hover:translate-x-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">
+          <Link href={detailHref} onClick={interceptOpen} className="inline-flex items-center gap-1.5 text-accent transition-all hover:text-accent/80 hover:translate-x-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">
             View case study
             <ArrowUpRight className="size-4" aria-hidden />
-          </button>
+          </Link>
           {project.projectUrl && (
             <a href={project.projectUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-foreground">
               Visit live site

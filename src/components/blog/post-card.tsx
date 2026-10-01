@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { ArrowUpRight, Clock } from "lucide-react";
 import type { PostWithCategory } from "@/lib/data/posts";
@@ -11,12 +12,20 @@ type Props = { post: PostWithCategory; onOpen: () => void; featured?: boolean };
 
 export function PostCard({ post, onOpen, featured = false }: Props) {
   const [imgError, setImgError] = useState(false);
+  const detailHref = `/blog/${post.slug}`;
+
+  /** JS overlay handles the click (instant reader); href keeps SEO + no-JS working. */
+  const interceptOpen = (e: React.MouseEvent) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return; // let new-tab work
+    e.preventDefault();
+    onOpen();
+  };
 
   return (
     <article className={cn("group relative flex flex-col transition-transform duration-300 ease-[var(--ease-standard)] hover:-translate-y-1", featured && "lg:grid lg:grid-cols-12 lg:items-center lg:gap-10")}>
-      <button
-        type="button"
-        onClick={onOpen}
+      <Link
+        href={detailHref}
+        onClick={interceptOpen}
         data-cursor="project"
         aria-label={`Read article: ${post.title}`}
         className={cn("relative block overflow-hidden rounded-2xl border border-border bg-secondary/45 transition-all duration-300 ease-[var(--ease-standard)] group-hover:border-foreground/20 group-hover:shadow-[0_8px_30px_-12px_hsl(var(--accent)/0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", featured ? "aspect-[16/10] lg:col-span-7" : "aspect-[16/10]")}
@@ -34,7 +43,7 @@ export function PostCard({ post, onOpen, featured = false }: Props) {
         <span className="absolute bottom-4 right-4 flex size-10 translate-y-2 items-center justify-center rounded-full bg-foreground text-background opacity-0 transition-all duration-500 ease-[var(--ease-out-expo)] group-hover:translate-y-0 group-hover:opacity-100" aria-hidden>
           <ArrowUpRight className="size-4" />
         </span>
-      </button>
+      </Link>
 
       <div className={cn("mt-5 flex flex-col gap-3", featured && "lg:col-span-5 lg:mt-0")}>
         <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
@@ -47,16 +56,16 @@ export function PostCard({ post, onOpen, featured = false }: Props) {
           {featured && <Badge variant="accent">Featured</Badge>}
         </div>
         <h3 className={cn("font-display font-semibold tracking-tight", featured ? "text-2xl md:text-3xl lg:text-4xl" : "text-xl")}>
-          <button type="button" onClick={onOpen} className="link-underline text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">
+          <Link href={detailHref} onClick={interceptOpen} className="link-underline text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">
             {post.title}
-          </button>
+          </Link>
         </h3>
         <p className={cn("leading-relaxed text-muted-foreground", featured ? "text-base md:text-lg" : "text-sm")}>{post.excerpt}</p>
         {featured && (
-          <button type="button" onClick={onOpen} className="mt-2 inline-flex items-center gap-1.5 self-start text-sm font-medium transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">
+          <Link href={detailHref} onClick={interceptOpen} className="mt-2 inline-flex items-center gap-1.5 self-start text-sm font-medium transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">
             Read article
             <ArrowUpRight className="size-4" aria-hidden />
-          </button>
+          </Link>
         )}
       </div>
     </article>

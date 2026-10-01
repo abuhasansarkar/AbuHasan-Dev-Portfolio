@@ -11,13 +11,20 @@ export const siteConfig = {
   twitterHandle: "",
 } as const;
 
+/**
+ * Section links are root-absolute (`/#section`) so they work from the
+ * single-page home view *and* from the crawlable `/work/[slug]` and
+ * `/blog/[slug]` detail routes. From a detail route the browser performs a
+ * full navigation back to the home section; the smooth-scroll provider only
+ * intercepts them when the home page is already loaded.
+ */
 export const navLinks = [
-  { label: "About", href: "#about" },
-  { label: "Services", href: "#services" },
-  { label: "Work", href: "#work" },
-  { label: "Process", href: "#process" },
-  { label: "Blog", href: "#blog" },
-  { label: "Contact", href: "#contact" },
+  { label: "About", href: "/#about" },
+  { label: "Services", href: "/#services" },
+  { label: "Work", href: "/#work" },
+  { label: "Process", href: "/#process" },
+  { label: "Blog", href: "/#blog" },
+  { label: "Contact", href: "/#contact" },
 ] as const;
 
 export const sectionIds = [

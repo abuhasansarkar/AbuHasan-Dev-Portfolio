@@ -14,17 +14,17 @@ import { ThemeToggle } from "./theme-toggle";
 /** Which nav link lights up for each section on the page */
 const sectionToNav: Record<SectionId, string> = {
   hero: "",
-  about: "#about",
-  services: "#services",
-  expertise: "#services",
-  work: "#work",
-  transformation: "#work",
-  process: "#process",
-  why: "#process",
-  testimonials: "#process",
-  blog: "#blog",
-  faq: "#blog",
-  contact: "#contact",
+  about: "/#about",
+  services: "/#services",
+  expertise: "/#services",
+  work: "/#work",
+  transformation: "/#work",
+  process: "/#process",
+  why: "/#process",
+  testimonials: "/#process",
+  blog: "/#blog",
+  faq: "/#blog",
+  contact: "/#contact",
 };
 
 export function Navbar({ ctaLabel, name }: { ctaLabel: string; name: string }) {
@@ -53,8 +53,9 @@ export function Navbar({ ctaLabel, name }: { ctaLabel: string; name: string }) {
         )}
       >
         <div className="container-x flex h-18 items-center justify-between gap-6 lg:h-20">
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- plain anchor keeps smooth-scroll + no-JS working for the in-page `#hero` target */}
           <a
-            href="#hero"
+            href="/#hero"
             className="group flex items-center gap-2 font-display text-lg font-semibold tracking-tight text-foreground transition-transform duration-300 hover:scale-[1.02]"
             aria-label={`${name} – back to top`}
           >
@@ -105,7 +106,8 @@ export function Navbar({ ctaLabel, name }: { ctaLabel: string; name: string }) {
             </a>
             <Magnetic strength={0.25} className="hidden lg:inline-block">
               <Button asChild size="sm" variant="accent" data-cursor="cta" className="breathe-glow font-medium shadow-[0_0_20px_-3px_hsl(var(--accent)/0.4)]">
-                <a href="#contact">{ctaLabel}</a>
+                {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- plain anchor so the Lenis smooth-scroll provider can intercept it on `/` */}
+                <a href="/#contact">{ctaLabel}</a>
               </Button>
             </Magnetic>
             <Button

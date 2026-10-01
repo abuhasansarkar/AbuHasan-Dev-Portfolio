@@ -20,7 +20,8 @@ export function Footer({ profile, social }: { profile: SiteSettings["profile"]; 
     <footer className="border-t border-border/70">
       <div className="container-x grid gap-12 py-16 md:grid-cols-12 md:py-20">
         <Reveal className="md:col-span-5" y={24}>
-          <a href="#hero" className="flex items-center gap-2 font-display text-2xl font-bold tracking-tight text-foreground">
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- plain anchor keeps smooth-scroll + no-JS working for the in-page `#hero` target */}
+          <a href="/#hero" className="flex items-center gap-2 font-display text-2xl font-bold tracking-tight text-foreground">
             <span className="relative flex size-2.5 items-center justify-center">
               <span className="radar-beacon size-2 rounded-full bg-accent" />
             </span>

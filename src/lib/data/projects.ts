@@ -20,3 +20,19 @@ export const getPublishedProjects = unstable_cache(
   ["projects-published"],
   { tags: [TAGS.projects], revalidate: 3600 },
 );
+
+/** Single published project for the crawlable `/work/[slug]` route. */
+export const getPublishedProjectBySlug = (slug: string) =>
+  unstable_cache(
+    async () =>
+      safeQuery<ProjectWithImages | null>(
+        () =>
+          prisma.project.findFirst({
+            where: { slug, published: true },
+            include: { images: { orderBy: { sortOrder: "asc" } } },
+          }),
+        null,
+      ),
+    ["project-by-slug", slug],
+    { tags: [TAGS.projects], revalidate: 3600 },
+  )();

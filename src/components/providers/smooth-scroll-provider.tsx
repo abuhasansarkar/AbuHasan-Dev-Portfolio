@@ -17,10 +17,11 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
     // Only instantiate on client
     if (typeof window === "undefined") return;
 
-    // Respect the OS-level reduced-motion preference (WCAG 2.3.3) and keep the admin
-    // dashboard on native scrolling so tables, modals and forms behave predictably.
+    // Respect the OS-level reduced-motion preference (WCAG 2.3.3), touch screens (mobile
+    // already has hardware-accelerated 120Hz smooth scrolling), and the admin dashboard.
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion || window.location.pathname.startsWith("/admin")) return;
+    const isTouchDevice = window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768;
+    if (prefersReducedMotion || isTouchDevice || window.location.pathname.startsWith("/admin")) return;
 
     const lenis = new Lenis({
       duration: 1.2,

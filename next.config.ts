@@ -54,6 +54,14 @@ const nextConfig: NextConfig = {
     ],
   },
   experimental: {
+    optimizePackageImports: [
+      "lucide-react",
+      "framer-motion",
+      "@radix-ui/react-dialog",
+      "@radix-ui/react-accordion",
+      "@radix-ui/react-dropdown-menu",
+      "@radix-ui/react-select",
+    ],
     serverActions: {
       // Text-only forms – uploads use the /api/admin/upload route handler.
       bodySizeLimit: "1mb",

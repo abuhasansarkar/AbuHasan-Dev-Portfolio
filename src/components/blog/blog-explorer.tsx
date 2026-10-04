@@ -9,8 +9,13 @@ import { EmptyState } from "@/components/layout/empty-state";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import dynamic from "next/dynamic";
 import { PostCard } from "./post-card";
-import { PostOverlay } from "./post-overlay";
+
+const PostOverlay = dynamic(
+  () => import("./post-overlay").then((m) => m.PostOverlay),
+  { ssr: false }
+);
 
 const HASH_KEY = "post=";
 
@@ -118,7 +123,9 @@ export function BlogExplorer({ posts, categories }: { posts: PostWithCategory[];
         </div>
       )}
 
-      <PostOverlay post={activePost} onClose={closePost} related={related} onOpen={openPost} />
+      {activePost && (
+        <PostOverlay post={activePost} onClose={closePost} related={related} onOpen={openPost} />
+      )}
     </>
   );
 }

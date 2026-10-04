@@ -157,9 +157,10 @@
   }
 }
 
-/* Elements animated in by GSAP start hidden only when scripting is enabled and no reduced motion */
+/* Below-the-fold elements animated in by GSAP start hidden only when scripting is enabled and no reduced motion.
+   Hero elements must always remain visible immediately for instant Largest Contentful Paint (LCP). */
 @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
-  [data-reveal] {
+  [data-reveal]:not(#hero *):not(#hero) {
     visibility: hidden;
   }
 }

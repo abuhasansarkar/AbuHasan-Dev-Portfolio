@@ -89,7 +89,7 @@ export function Contact({
                         fill
                         sizes="(max-width: 640px) 112px, 144px"
                         className="object-cover object-top"
-                        priority
+                        loading="lazy"
                       />
                       <span className="absolute bottom-2 right-2 flex size-3 items-center justify-center" title="Available for new projects">
                         <span className="radar-beacon size-2 rounded-full bg-success shadow-[0_0_6px_hsl(var(--success))]" />

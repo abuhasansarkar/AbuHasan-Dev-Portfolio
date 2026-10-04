@@ -108,7 +108,7 @@ export function PostOverlay({ post, onClose, related, onOpen }: Props) {
 
                   {post.coverImage && (
                     <div className="relative mx-auto mt-10 aspect-[16/9] max-w-5xl overflow-hidden rounded-2xl border border-border bg-secondary">
-                      <Image src={post.coverImage} alt="" fill sizes="(min-width: 1024px) 1024px, 100vw" className="object-cover" priority />
+                      <Image src={post.coverImage} alt="" fill sizes="(min-width: 1024px) 1024px, 100vw" className="object-cover" loading="lazy" />
                     </div>
                   )}
 

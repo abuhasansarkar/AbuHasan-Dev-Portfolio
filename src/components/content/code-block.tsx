@@ -2,8 +2,29 @@
 
 import { useMemo, useState } from "react";
 import { Check, Copy, Terminal } from "lucide-react";
-import hljs from "highlight.js";
+import hljs from "highlight.js/lib/core";
+import typescript from "highlight.js/lib/languages/typescript";
+import javascript from "highlight.js/lib/languages/javascript";
+import css from "highlight.js/lib/languages/css";
+import xml from "highlight.js/lib/languages/xml";
+import bash from "highlight.js/lib/languages/bash";
+import json from "highlight.js/lib/languages/json";
+import python from "highlight.js/lib/languages/python";
+import yaml from "highlight.js/lib/languages/yaml";
 import { cn } from "@/lib/utils";
+
+// Register only the lightweight common languages
+if (!hljs.getLanguage("typescript")) {
+  hljs.registerLanguage("typescript", typescript);
+  hljs.registerLanguage("javascript", javascript);
+  hljs.registerLanguage("css", css);
+  hljs.registerLanguage("xml", xml);
+  hljs.registerLanguage("html", xml);
+  hljs.registerLanguage("bash", bash);
+  hljs.registerLanguage("json", json);
+  hljs.registerLanguage("python", python);
+  hljs.registerLanguage("yaml", yaml);
+}
 
 interface CodeBlockProps {
   code: string;
@@ -31,7 +52,10 @@ function getHighlightedHtml(code: string, language?: string): string {
     if (target && hljs.getLanguage(target)) {
       return hljs.highlight(code, { language: target, ignoreIllegals: true }).value;
     }
-    return hljs.highlightAuto(code).value;
+    return code
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
   } catch {
     return code
       .replace(/&/g, "&amp;")

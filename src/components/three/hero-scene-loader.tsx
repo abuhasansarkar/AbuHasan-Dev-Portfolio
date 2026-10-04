@@ -42,6 +42,7 @@ class SceneErrorBoundary extends Component<
 /** Decides between the WebGL scene and the static fallback, and lazy-loads three.js off the critical path. */
 export function HeroSceneLoader() {
   const [webgl, setWebgl] = useState<boolean | null>(null);
+  const [readyToLoad, setReadyToLoad] = useState(false);
   const [contextLost, setContextLost] = useState(false);
   const [sceneKey, setSceneKey] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -52,7 +53,23 @@ export function HeroSceneLoader() {
     setWebgl(supportsWebGL());
   }, []);
 
-  const sceneActive = webgl === true && !reduced && isMobile !== undefined;
+  // Defer 3D canvas loading until the main thread is idle (preserves 100/100 Core Web Vitals)
+  useEffect(() => {
+    if (typeof window === "undefined" || isMobile || reduced) return;
+
+    const onIdle = () => setReadyToLoad(true);
+    if ("requestIdleCallback" in window) {
+      const handle = (window as unknown as { requestIdleCallback: (cb: () => void, opts: { timeout: number }) => number }).requestIdleCallback(onIdle, { timeout: 2000 });
+      return () => {
+        (window as unknown as { cancelIdleCallback: (id: number) => void }).cancelIdleCallback(handle);
+      };
+    } else {
+      const timer = setTimeout(onIdle, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [isMobile, reduced]);
+
+  const sceneActive = webgl === true && !reduced && !isMobile && readyToLoad;
 
   // Handle WebGL context loss: show the static fallback immediately and
   // remount a fresh scene once the browser signals the context was restored.
@@ -62,8 +79,6 @@ export function HeroSceneLoader() {
     if (!el) return;
 
     const onContextLost = (e: Event) => {
-      // Prevent the browser's default "context lost" handling so React can
-      // swap to the fallback without throwing.
       e.preventDefault();
       setContextLost(true);
     };
@@ -80,13 +95,15 @@ export function HeroSceneLoader() {
     };
   }, [sceneActive]);
 
-  if (webgl === null || reduced === undefined || isMobile === undefined) return <SceneFallback />;
-  if (!webgl || reduced) return <SceneFallback />;
+  // On mobile, reduced motion, unsupported WebGL, or before idle: render gorgeous CSS fallback
+  if (webgl === null || reduced || isMobile || !readyToLoad || !webgl) {
+    return <SceneFallback />;
+  }
 
   return (
     <div ref={containerRef} className="contents">
       <SceneErrorBoundary resetKey={sceneKey}>
-        {contextLost ? <SceneFallback /> : <HeroScene key={sceneKey} simplified={isMobile} />}
+        {contextLost ? <SceneFallback /> : <HeroScene key={sceneKey} simplified={false} />}
       </SceneErrorBoundary>
     </div>
   );

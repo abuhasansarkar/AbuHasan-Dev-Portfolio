@@ -5,7 +5,6 @@ export function ScrollIndicator() {
     <a
       href="#about"
       data-hero="scroll"
-      data-reveal
       aria-label="Scroll to about section"
       className="group absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-3 text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground transition-colors hover:text-foreground md:flex"
     >

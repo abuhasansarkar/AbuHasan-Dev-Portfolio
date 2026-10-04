@@ -52,7 +52,7 @@ export function CaseStudyBody({ project }: { project: ProjectWithImages }) {
       <div className="mt-12 rounded-2xl border border-border bg-secondary/40 p-3 sm:p-6 lg:p-10">
         <BrowserFrame url={project.projectUrl || `${project.slug}.com`} accent={project.accentColor}>
           <div className="relative aspect-[16/9] w-full bg-background">
-            <Image src={project.coverImage} alt={`${project.title} website preview`} fill sizes="100vw" className="object-cover object-top" priority />
+            <Image src={project.coverImage} alt={`${project.title} website preview`} fill sizes="100vw" className="object-cover object-top" loading="lazy" />
           </div>
         </BrowserFrame>
       </div>

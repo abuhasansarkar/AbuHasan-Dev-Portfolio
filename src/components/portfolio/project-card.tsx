@@ -75,7 +75,7 @@ export function ProjectCard({ project, index, wide, onOpen, className }: Project
                   fill
                   sizes={wide ? "(min-width: 1024px) 58vw, 100vw" : "(min-width: 1024px) 42vw, 100vw"}
                   className="object-cover object-top transition-transform duration-700 ease-[var(--ease-standard)] group-hover:scale-[1.04]"
-                  priority={index < 2}
+                  loading="lazy"
                   onError={() => setImgError(true)}
                 />
                 </Parallax>

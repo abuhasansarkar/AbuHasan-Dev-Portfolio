@@ -2,10 +2,15 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import dynamic from "next/dynamic";
 import type { ProjectWithImages } from "@/lib/data/projects";
-import { CaseStudyOverlay } from "@/components/case-study/case-study-overlay";
 import { ProjectCard } from "./project-card";
 import { cn } from "@/lib/utils";
+
+const CaseStudyOverlay = dynamic(
+  () => import("@/components/case-study/case-study-overlay").then((m) => m.CaseStudyOverlay),
+  { ssr: false }
+);
 
 const HASH_KEY = "project=";
 
@@ -120,7 +125,9 @@ export function WorkGrid({ projects }: { projects: ProjectWithImages[] }) {
         </AnimatePresence>
       </motion.div>
 
-      <CaseStudyOverlay projects={projects} index={active} onClose={close} onNavigate={open} />
+      {active !== null && (
+        <CaseStudyOverlay projects={projects} index={active} onClose={close} onNavigate={open} />
+      )}
     </>
   );
 }

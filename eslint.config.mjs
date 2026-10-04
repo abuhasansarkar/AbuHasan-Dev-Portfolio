@@ -12,7 +12,8 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
-    ignores: [".next/**", "node_modules/**", "public/**"],
+    // Generated files, third-party output and the agent worktree must never be linted.
+    ignores: [".next/**", "node_modules/**", ".kilo/**", "public/**", "next-env.d.ts"],
   },
 ];
 

@@ -2,12 +2,16 @@ import "server-only";
 import { unstable_cache } from "next/cache";
 import type { BlogCategory, Prisma } from "@prisma/client";
 import { prisma, safeQuery } from "@/lib/db";
+import { reviveDates } from "./serialize";
 import { TAGS } from "./tags";
 
 export type PostWithCategory = Prisma.BlogPostGetPayload<{ include: { category: true } }>;
 
+type PostListResult = { data: PostWithCategory[]; error: boolean };
+type PostResult = { data: PostWithCategory | null; error: boolean };
+
 /** Public list: published posts only, newest first. Content included so overlays open instantly without a second request. */
-export const getPublishedPosts = unstable_cache(
+const cachedPublishedPosts = unstable_cache(
   async () =>
     safeQuery<PostWithCategory[]>(
       () =>
@@ -22,6 +26,10 @@ export const getPublishedPosts = unstable_cache(
   { tags: [TAGS.posts], revalidate: 3600 },
 );
 
+export async function getPublishedPosts(): Promise<PostListResult> {
+  return reviveDates(await cachedPublishedPosts());
+}
+
 export const getBlogCategories = unstable_cache(
   async () => safeQuery<BlogCategory[]>(() => prisma.blogCategory.findMany({ orderBy: { sortOrder: "asc" } }), []),
   ["blog-categories"],
@@ -29,7 +37,7 @@ export const getBlogCategories = unstable_cache(
 );
 
 /** Single published post for the crawlable `/blog/[slug]` route. */
-export const getPublishedPostBySlug = (slug: string) =>
+const cachedPostBySlug = (slug: string) =>
   unstable_cache(
     async () =>
       safeQuery<PostWithCategory | null>(
@@ -42,4 +50,9 @@ export const getPublishedPostBySlug = (slug: string) =>
       ),
     ["post-by-slug", slug],
     { tags: [TAGS.posts], revalidate: 3600 },
-  )();
+  );
+
+export async function getPublishedPostBySlug(slug: string): Promise<PostResult> {
+  return reviveDates(await cachedPostBySlug(slug)());
+}
+

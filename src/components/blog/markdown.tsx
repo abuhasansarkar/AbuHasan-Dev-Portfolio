@@ -2,7 +2,6 @@
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import rehypeHighlight from "rehype-highlight";
 import { BlockRenderer } from "@/components/content/block-renderer";
 import { CodeBlock } from "@/components/content/code-block";
 import type { ContentBlock } from "@/types/content-blocks";
@@ -33,9 +32,11 @@ export function Markdown({ content }: { content: string }) {
 
   return (
     <div className="prose-custom">
+      {/* Highlighting is handled by the custom `code` renderer (CodeBlock / highlight.js);
+          rehype-highlight is intentionally NOT used — it would double-process the code and
+          replace the raw text child that CodeBlock needs to read. */}
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeHighlight]}
         components={{
           a: ({ href, children }) => {
             const external = href?.startsWith("http");

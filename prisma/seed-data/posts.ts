@@ -35,6 +35,4 @@ export type SeedPost = {
   isDemo: boolean;
 };
 
-const author = "Abu Hasan Sarkar";
-
 export const posts: SeedPost[] = [];

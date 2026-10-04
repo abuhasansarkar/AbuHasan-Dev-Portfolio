@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { getPublishedProjectBySlug, getPublishedProjects } from "@/lib/data/projects";
 import { getSiteSettings } from "@/lib/settings/get-settings";
 import { siteConfig } from "@/lib/site";
+import { formatIsoDate } from "@/lib/utils";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -76,7 +77,7 @@ export default async function WorkProjectPage({ params }: Props) {
         genre: project.category,
         keywords: project.technologies.join(", "),
         author: { "@id": `${siteConfig.url}/#person` },
-        dateModified: project.updatedAt.toISOString(),
+        dateModified: formatIsoDate(project.updatedAt),
       },
       {
         "@type": "BreadcrumbList",

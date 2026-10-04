@@ -1,5 +1,10 @@
 // Edge-safe session token helpers (no Node-only APIs). Used by middleware and server code.
-import { SignJWT, jwtVerify } from "jose";
+//
+// Import from jose's subpaths (not the barrel) so the Edge middleware bundle never pulls in the
+// JWE/compression code paths, which otherwise trigger "A Node.js API is used (CompressionStream…)
+// which is not supported in the Edge Runtime" warnings during `next build`. Only HS256 JWS is used.
+import { SignJWT } from "jose/jwt/sign";
+import { jwtVerify } from "jose/jwt/verify";
 
 export const SESSION_COOKIE = "ah_admin_session";
 export const SESSION_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 days

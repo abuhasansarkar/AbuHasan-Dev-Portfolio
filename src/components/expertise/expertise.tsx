@@ -24,10 +24,17 @@ export function Expertise({ name }: { name: string }) {
             <div className="mt-12 flex flex-col gap-8 lg:hidden">
               {techGroups.map((group) => (
                 <div key={group.id}>
-                  <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">{group.label}</p>
+                  <p className="mb-3 flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+                    <span aria-hidden className="size-1.5 shrink-0 rounded-full" style={{ background: `hsl(${group.color})` }} />
+                    {group.label}
+                  </p>
                   <Reveal stagger={0.04} className="flex flex-wrap gap-2">
                     {group.items.map((item) => (
-                      <span key={item} className="rounded-full border border-border/70 bg-card/80 backdrop-blur-sm px-3.5 py-2 text-sm font-medium tracking-tight shadow-xs hover:border-accent/40 hover:text-accent transition-all">
+                      <span
+                        key={item}
+                        className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card/80 px-3.5 py-2 text-sm font-medium tracking-tight shadow-xs backdrop-blur-sm transition-all hover:border-accent/40 hover:text-accent"
+                      >
+                        <span aria-hidden className="size-1.5 shrink-0 rounded-full" style={{ background: `hsl(${group.color})` }} />
                         {item}
                       </span>
                     ))}
@@ -37,10 +44,10 @@ export function Expertise({ name }: { name: string }) {
             </div>
           </div>
 
-          {/* Desktop: orbit */}
-          <div className="col-span-12 hidden lg:col-span-7 lg:block [container-type:inline-size]">
-            <Reveal scale={0.94} duration={1.4}>
-              <Parallax strength={12}>
+          {/* Desktop: orbit + legend (the stage owns its own container query) */}
+          <div className="col-span-12 hidden lg:col-span-7 lg:block">
+            <Reveal scale={0.96} duration={1.4}>
+              <Parallax strength={10}>
                 <TechOrbit name={name} />
               </Parallax>
             </Reveal>

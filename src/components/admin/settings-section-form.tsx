@@ -10,9 +10,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { initialActionState } from "@/lib/admin/action-state";
 import { getPath } from "@/lib/admin/form-data";
 import { statsToText, type SettingsSection } from "@/lib/admin/settings-fields";
+import { usePreventFormReset } from "@/lib/admin/use-prevent-form-reset";
 
 export function SettingsSectionForm({ section, values }: { section: SettingsSection; values: unknown }) {
   const [state, action] = useActionState(saveSettings, initialActionState);
+  const { formRef } = usePreventFormReset(state);
   const e = state.fieldErrors ?? {};
 
   useEffect(() => {
@@ -20,7 +22,7 @@ export function SettingsSectionForm({ section, values }: { section: SettingsSect
   }, [state]);
 
   return (
-    <form action={action} id={`settings-${section.key}`} className="grid gap-6 rounded-2xl border border-border bg-card p-6 md:grid-cols-12 md:p-8">
+    <form ref={formRef} action={action} id={`settings-${section.key}`} className="grid gap-6 rounded-2xl border border-border bg-card p-6 md:grid-cols-12 md:p-8">
       <input type="hidden" name="key" value={section.key} />
       <div className="md:col-span-4">
         <h2 className="font-display text-lg font-semibold tracking-tight">{section.title}</h2>

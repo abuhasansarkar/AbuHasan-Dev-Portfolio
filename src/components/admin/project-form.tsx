@@ -11,15 +11,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { initialActionState } from "@/lib/admin/action-state";
+import { usePreventFormReset } from "@/lib/admin/use-prevent-form-reset";
 import type { ProjectWithImages } from "@/lib/data/projects";
 
 export function ProjectForm({ project }: { project?: ProjectWithImages }) {
   const [state, action] = useActionState(saveProject, initialActionState);
+  const { formRef } = usePreventFormReset(state);
   const e = state.fieldErrors ?? {};
   const imagesText = project?.images.map((i) => [i.url, i.alt, i.caption ?? ""].filter((_, idx) => idx < 2 || i.caption).join(" | ")).join("\n") ?? "";
 
   return (
-    <form action={action} className="flex flex-col gap-6">
+    <form ref={formRef} action={action} className="flex flex-col gap-6">
       {project && <input type="hidden" name="id" value={project.id} />}
 
       <FormSection title="Basics" description="How the project appears in the Selected Work grid.">

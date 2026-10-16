@@ -12,13 +12,15 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { initialActionState } from "@/lib/admin/action-state";
+import { usePreventFormReset } from "@/lib/admin/use-prevent-form-reset";
 
 export function TestimonialForm({ testimonial }: { testimonial?: Testimonial }) {
   const [state, action] = useActionState(saveTestimonial, initialActionState);
+  const { formRef } = usePreventFormReset(state);
   const e = state.fieldErrors ?? {};
 
   return (
-    <form action={action} className="flex flex-col gap-6">
+    <form ref={formRef} action={action} className="flex flex-col gap-6">
       {testimonial && <input type="hidden" name="id" value={testimonial.id} />}
       <FormSection title="Testimonial" description="Only publish quotes you have permission to use. Keep placeholders flagged as demo.">
         <FormField label="Quote" name="quote" error={e.quote}>

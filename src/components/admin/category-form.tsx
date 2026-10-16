@@ -1,26 +1,27 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
 import { createCategory } from "@/app/actions/admin/posts";
 import { FormError } from "@/components/admin/form-field";
 import { SubmitButton } from "@/components/admin/submit-button";
 import { Input } from "@/components/ui/input";
 import { initialActionState } from "@/lib/admin/action-state";
+import { usePreventFormReset } from "@/lib/admin/use-prevent-form-reset";
 
 export function CategoryForm() {
   const [state, action] = useActionState(createCategory, initialActionState);
-  const ref = useRef<HTMLFormElement>(null);
+  const { formRef, resetForm } = usePreventFormReset(state);
 
   useEffect(() => {
     if (state.ok) {
       toast.success(state.message ?? "Category created");
-      ref.current?.reset();
+      resetForm();
     }
-  }, [state]);
+  }, [state, resetForm]);
 
   return (
-    <form ref={ref} action={action} className="flex flex-col gap-3">
+    <form ref={formRef} action={action} className="flex flex-col gap-3">
       <div className="flex flex-col gap-2 sm:flex-row">
         <Input name="name" placeholder="Category name" aria-label="Category name" required className="sm:max-w-xs" />
         <Input name="slug" placeholder="slug (optional)" aria-label="Category slug" className="sm:max-w-[180px]" />

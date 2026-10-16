@@ -11,15 +11,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { initialActionState } from "@/lib/admin/action-state";
+import { usePreventFormReset } from "@/lib/admin/use-prevent-form-reset";
 import { cn } from "@/lib/utils";
 
 export function ServiceForm({ service }: { service?: Service }) {
   const [state, action] = useActionState(saveService, initialActionState);
+  const { formRef } = usePreventFormReset(state);
   const [icon, setIcon] = useState(service?.icon ?? "code");
   const e = state.fieldErrors ?? {};
 
   return (
-    <form action={action} className="flex flex-col gap-6">
+    <form ref={formRef} action={action} className="flex flex-col gap-6">
       {service && <input type="hidden" name="id" value={service.id} />}
       <input type="hidden" name="icon" value={icon} />
       <FormSection title="Service" description="Shown as a numbered card. Order controls the number.">

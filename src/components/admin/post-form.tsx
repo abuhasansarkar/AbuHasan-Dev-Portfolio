@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { initialActionState } from "@/lib/admin/action-state";
+import { usePreventFormReset } from "@/lib/admin/use-prevent-form-reset";
 import type { PostWithCategory } from "@/lib/data/posts";
 
 function toLocalInput(d: Date | null | undefined) {
@@ -23,10 +24,11 @@ function toLocalInput(d: Date | null | undefined) {
 
 export function PostForm({ post, categories }: { post?: PostWithCategory; categories: BlogCategory[] }) {
   const [state, action] = useActionState(savePost, initialActionState);
+  const { formRef } = usePreventFormReset(state);
   const e = state.fieldErrors ?? {};
 
   return (
-    <form action={action} className="flex flex-col gap-6">
+    <form ref={formRef} action={action} className="flex flex-col gap-6">
       {post && <input type="hidden" name="id" value={post.id} />}
 
       <FormSection title="Article" description="Body supports Markdown: headings, lists, links, images, code blocks and tables.">

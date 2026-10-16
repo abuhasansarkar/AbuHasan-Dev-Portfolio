@@ -7,10 +7,16 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-type Props = { name: string; defaultValue?: string | null; id?: string; required?: boolean };
+type Props = {
+  name: string;
+  defaultValue?: string | null;
+  id?: string;
+  required?: boolean;
+  "aria-invalid"?: boolean;
+};
 
 /** URL field with optional upload. Upload posts to /api/admin/upload and fills the URL. */
-export function ImageInput({ name, defaultValue, id, required }: Props) {
+export function ImageInput({ name, defaultValue, id, required, ...props }: Props) {
   const [value, setValue] = useState(defaultValue ?? "");
   const [uploading, setUploading] = useState(false);
   const [broken, setBroken] = useState(false);
@@ -38,7 +44,18 @@ export function ImageInput({ name, defaultValue, id, required }: Props) {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex gap-2">
-        <Input id={id ?? name} name={name} value={value} onChange={(e) => { setValue(e.target.value); setBroken(false); }} placeholder="/demo/... or https://" required={required} />
+        <Input
+          id={id ?? name}
+          name={name}
+          value={value}
+          onChange={(e) => {
+            setValue(e.target.value);
+            setBroken(false);
+          }}
+          placeholder="/demo/... or https://"
+          required={required}
+          aria-invalid={props["aria-invalid"]}
+        />
         <input ref={fileRef} type="file" accept="image/*" className="sr-only" onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} aria-label="Upload image" />
         <Button type="button" variant="outline" onClick={() => fileRef.current?.click()} disabled={uploading}>
           {uploading ? <Loader2 className="animate-spin" aria-hidden /> : <Upload aria-hidden />}

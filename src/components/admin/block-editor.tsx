@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import { parseVideoEmbedUrl } from "@/lib/video-embed";
 import type {
   CodeLanguage,
@@ -32,6 +33,7 @@ interface BlockEditorProps {
   name: string;
   defaultValue?: string | null;
   placeholder?: string;
+  "aria-invalid"?: boolean;
 }
 
 function parseInitialBlocks(defaultValue?: string | null): {
@@ -70,7 +72,7 @@ function parseInitialBlocks(defaultValue?: string | null): {
   };
 }
 
-export function BlockEditor({ name, defaultValue }: BlockEditorProps) {
+export function BlockEditor({ name, defaultValue, ...props }: BlockEditorProps) {
   const initial = parseInitialBlocks(defaultValue);
   const [mode, setMode] = useState<"blocks" | "markdown">(initial.mode);
   const [blocks, setBlocks] = useState<ContentBlock[]>(initial.blocks);
@@ -224,7 +226,13 @@ export function BlockEditor({ name, defaultValue }: BlockEditorProps) {
   const payloadValue = mode === "blocks" ? JSON.stringify(blocks) : markdown;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div
+      className={cn(
+        "flex flex-col gap-4 transition-colors",
+        props["aria-invalid"] && "rounded-xl border border-destructive/60 p-3 bg-destructive/[0.02]"
+      )}
+      aria-invalid={props["aria-invalid"]}
+    >
       {/* Hidden file input for ImageKit uploads */}
       <input
         ref={fileInputRef}

@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { cloneElement, isValidElement, type ReactElement, type ReactNode } from "react";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
@@ -13,14 +13,22 @@ type FormFieldProps = {
 };
 
 export function FormField({ label, name, error, hint, children, className, inline = false }: FormFieldProps) {
+  const hasError = Boolean(error);
+  const enhancedChild = isValidElement(children)
+    ? cloneElement(children as ReactElement<Record<string, unknown>>, {
+        "aria-invalid": hasError ? true : undefined,
+        "aria-describedby": hasError ? `${name}-error` : hint ? `${name}-hint` : undefined,
+      })
+    : children;
+
   return (
     <div className={cn("flex gap-2", inline ? "flex-row-reverse items-center justify-end" : "flex-col", className)}>
       <Label htmlFor={name} className={cn(inline && "cursor-pointer")}>
         {label}
       </Label>
-      {children}
+      {enhancedChild}
       {error ? (
-        <p id={`${name}-error`} className="text-xs text-destructive" role="alert">
+        <p id={`${name}-error`} className="text-xs font-medium text-destructive" role="alert">
           {error}
         </p>
       ) : hint ? (

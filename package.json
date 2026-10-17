@@ -20,7 +20,6 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@getbrevo/brevo": "^6.0.3",
     "@imagekit/next": "^2.1.5",
     "@imagekit/nodejs": "^7.11.0",
     "@prisma/client": "^6.19.3",

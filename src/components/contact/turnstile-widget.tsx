@@ -31,6 +31,12 @@ export function TurnstileWidget({
   const [scriptReady, setScriptReady] = useState(false);
 
   useEffect(() => {
+    if (getTurnstile()) {
+      setScriptReady(true);
+    }
+  }, []);
+
+  useEffect(() => {
     if (!scriptReady || !containerRef.current || widgetIdRef.current) return;
     const turnstile = getTurnstile();
     if (!turnstile) return;

@@ -44,7 +44,13 @@ export function ServiceForm({ service }: { service?: Service }) {
         </FormField>
         <div>
           <p className="mb-2 text-sm font-medium">Icon</p>
-          <div role="radiogroup" aria-label="Icon" className="flex flex-wrap gap-2">
+          <div
+            role="radiogroup"
+            aria-label="Icon"
+            aria-invalid={Boolean(e.icon)}
+            aria-describedby={e.icon ? "service-icon-error" : undefined}
+            className={cn("flex flex-wrap gap-2 rounded-lg p-1 transition-colors", e.icon && "border border-destructive/60 bg-destructive/[0.02]")}
+          >
             {serviceIconNames.map((name) => (
               <button
                 key={name}
@@ -59,7 +65,11 @@ export function ServiceForm({ service }: { service?: Service }) {
               </button>
             ))}
           </div>
-          {e.icon && <p className="mt-2 text-xs text-destructive">{e.icon}</p>}
+          {e.icon && (
+            <p id="service-icon-error" role="alert" className="mt-2 text-xs font-medium text-destructive">
+              {e.icon}
+            </p>
+          )}
         </div>
         <div className="grid gap-5 sm:grid-cols-2">
           <FormField label="Sort order" name="sortOrder" error={e.sortOrder}>

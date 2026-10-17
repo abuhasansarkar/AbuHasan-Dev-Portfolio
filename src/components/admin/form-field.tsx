@@ -14,10 +14,16 @@ type FormFieldProps = {
 
 export function FormField({ label, name, error, hint, children, className, inline = false }: FormFieldProps) {
   const hasError = Boolean(error);
+  const childProps = isValidElement(children) ? (children.props as Record<string, unknown>) : null;
+  const existingDescribedBy = childProps?.["aria-describedby"] as string | undefined;
+  const fieldDescribedBy = hasError ? `${name}-error` : hint ? `${name}-hint` : undefined;
+  const combinedDescribedBy = [existingDescribedBy, fieldDescribedBy].filter(Boolean).join(" ") || undefined;
+
   const enhancedChild = isValidElement(children)
     ? cloneElement(children as ReactElement<Record<string, unknown>>, {
+        id: childProps?.id ?? name,
         "aria-invalid": hasError ? true : undefined,
-        "aria-describedby": hasError ? `${name}-error` : hint ? `${name}-hint` : undefined,
+        "aria-describedby": combinedDescribedBy,
       })
     : children;
 
@@ -40,8 +46,23 @@ export function FormField({ label, name, error, hint, children, className, inlin
   );
 }
 
-export function Checkbox({ id, name, defaultChecked }: { id: string; name: string; defaultChecked?: boolean }) {
-  return <input id={id} name={name} type="checkbox" defaultChecked={defaultChecked} className="size-4 rounded border-input accent-[hsl(var(--accent))]" />;
+export function Checkbox({
+  id,
+  name,
+  defaultChecked,
+  className,
+  ...props
+}: React.InputHTMLAttributes<HTMLInputElement>) {
+  return (
+    <input
+      id={id ?? name}
+      name={name}
+      type="checkbox"
+      defaultChecked={defaultChecked}
+      className={cn("size-4 rounded border-input accent-[hsl(var(--accent))]", className)}
+      {...props}
+    />
+  );
 }
 
 export function FormSection({ title, description, children }: { title: string; description?: string; children: ReactNode }) {
@@ -56,10 +77,18 @@ export function FormSection({ title, description, children }: { title: string; d
   );
 }
 
-export function FormError({ message }: { message?: string }) {
+export function FormError({ message, className, id }: { message?: string; className?: string; id?: string }) {
   if (!message) return null;
   return (
-    <p role="alert" className="rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+    <p
+      id={id}
+      role="alert"
+      tabIndex={-1}
+      className={cn(
+        "rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm font-medium text-destructive outline-none focus-visible:ring-2 focus-visible:ring-destructive/40",
+        className
+      )}
+    >
       {message}
     </p>
   );

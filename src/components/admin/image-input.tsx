@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ImageOff, Loader2, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ type Props = {
   id?: string;
   required?: boolean;
   "aria-invalid"?: boolean;
+  "aria-describedby"?: string;
 };
 
 /** URL field with optional upload. Upload posts to /api/admin/upload and fills the URL. */
@@ -21,6 +22,27 @@ export function ImageInput({ name, defaultValue, id, required, ...props }: Props
   const [uploading, setUploading] = useState(false);
   const [broken, setBroken] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // Sync state if defaultValue prop changes
+  useEffect(() => {
+    setValue(defaultValue ?? "");
+    setBroken(false);
+  }, [defaultValue]);
+
+  // Reset value when the enclosing form triggers a reset event
+  useEffect(() => {
+    const inputEl = document.getElementById(id ?? name);
+    const form = inputEl?.closest("form");
+    if (!form) return;
+
+    const onReset = () => {
+      setValue(defaultValue ?? "");
+      setBroken(false);
+    };
+
+    form.addEventListener("reset", onReset);
+    return () => form.removeEventListener("reset", onReset);
+  }, [id, name, defaultValue]);
 
   const upload = async (file: File) => {
     setUploading(true);
@@ -55,6 +77,7 @@ export function ImageInput({ name, defaultValue, id, required, ...props }: Props
           placeholder="/demo/... or https://"
           required={required}
           aria-invalid={props["aria-invalid"]}
+          aria-describedby={props["aria-describedby"]}
         />
         <input ref={fileRef} type="file" accept="image/*" className="sr-only" onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} aria-label="Upload image" />
         <Button type="button" variant="outline" onClick={() => fileRef.current?.click()} disabled={uploading}>

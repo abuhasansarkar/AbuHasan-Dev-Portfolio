@@ -11,14 +11,15 @@ import { usePreventFormReset } from "@/lib/admin/use-prevent-form-reset";
 export function LoginForm({ next }: { next?: string }) {
   const [state, action] = useActionState(login, initialActionState);
   const { formRef } = usePreventFormReset(state);
+  const e = state.fieldErrors ?? {};
 
   return (
     <form ref={formRef} action={action} className="flex flex-col gap-5">
       {next && <input type="hidden" name="next" value={next} />}
-      <FormField label="Email" name="email">
+      <FormField label="Email" name="email" error={e.email}>
         <Input id="email" name="email" type="email" autoComplete="username" required autoFocus />
       </FormField>
-      <FormField label="Password" name="password">
+      <FormField label="Password" name="password" error={e.password}>
         <Input id="password" name="password" type="password" autoComplete="current-password" required />
       </FormField>
       <FormError message={state.error} />

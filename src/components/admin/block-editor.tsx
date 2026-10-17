@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowDown,
   ArrowUp,
@@ -33,7 +33,10 @@ interface BlockEditorProps {
   name: string;
   defaultValue?: string | null;
   placeholder?: string;
+  id?: string;
   "aria-invalid"?: boolean;
+  "aria-describedby"?: string;
+  className?: string;
 }
 
 function parseInitialBlocks(defaultValue?: string | null): {
@@ -80,6 +83,29 @@ export function BlockEditor({ name, defaultValue, ...props }: BlockEditorProps) 
   const [uploadingBlockId, setUploadingBlockId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const activeUploadTargetRef = useRef<string | null>(null);
+
+  // Sync state when defaultValue prop changes
+  useEffect(() => {
+    const updated = parseInitialBlocks(defaultValue);
+    setMode(updated.mode);
+    setBlocks(updated.blocks);
+    setMarkdown(updated.rawMarkdown);
+  }, [defaultValue]);
+
+  // Handle form reset event to restore initial blocks/markdown
+  useEffect(() => {
+    const hidden = document.getElementById(props.id ?? name);
+    const form = hidden?.closest("form");
+    if (!form) return;
+    const handleReset = () => {
+      const resetInitial = parseInitialBlocks(defaultValue);
+      setMode(resetInitial.mode);
+      setBlocks(resetInitial.blocks);
+      setMarkdown(resetInitial.rawMarkdown);
+    };
+    form.addEventListener("reset", handleReset);
+    return () => form.removeEventListener("reset", handleReset);
+  }, [props.id, name, defaultValue]);
 
   // Add block handlers
   const handleAddText = (tag: TextTag) => {
@@ -227,11 +253,14 @@ export function BlockEditor({ name, defaultValue, ...props }: BlockEditorProps) 
 
   return (
     <div
+      id={props.id ? `${props.id}-container` : `${name}-container`}
       className={cn(
         "flex flex-col gap-4 transition-colors",
-        props["aria-invalid"] && "rounded-xl border border-destructive/60 p-3 bg-destructive/[0.02]"
+        props["aria-invalid"] && "rounded-xl border border-destructive/60 p-3 bg-destructive/[0.02]",
+        props.className
       )}
       aria-invalid={props["aria-invalid"]}
+      aria-describedby={props["aria-describedby"]}
     >
       {/* Hidden file input for ImageKit uploads */}
       <input
@@ -246,7 +275,14 @@ export function BlockEditor({ name, defaultValue, ...props }: BlockEditorProps) 
       />
 
       {/* Hidden input sent with server action */}
-      <input type="hidden" name={name} value={payloadValue} />
+      <input
+        type="hidden"
+        id={props.id ?? name}
+        name={name}
+        value={payloadValue}
+        aria-invalid={props["aria-invalid"]}
+        aria-describedby={props["aria-describedby"]}
+      />
 
       {/* Header bar: Mode Switcher */}
       <div className="flex items-center justify-between border-b border-border pb-3">
@@ -288,12 +324,14 @@ export function BlockEditor({ name, defaultValue, ...props }: BlockEditorProps) 
       {mode === "markdown" ? (
         /* Markdown Fallback Mode */
         <Textarea
-          id={`${name}-raw`}
+          id={`${props.id ?? name}-raw`}
           rows={22}
           value={markdown}
           onChange={(e) => setMarkdown(e.target.value)}
-          placeholder="Write in standard markdown..."
+          placeholder={props.placeholder ?? "Write in standard markdown..."}
           className="font-mono text-xs leading-relaxed"
+          aria-invalid={props["aria-invalid"]}
+          aria-describedby={props["aria-describedby"]}
         />
       ) : (
         /* Visual Block Mode */

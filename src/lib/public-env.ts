@@ -5,7 +5,11 @@
  * without pulling server-only env validation into the bundle. Only NEXT_PUBLIC_* values
  * may live here.
  */
-const rawSiteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(/\/$/, "");
+const vercelUrl = process.env.NEXT_PUBLIC_VERCEL_URL || process.env.VERCEL_URL;
+const rawSiteUrl = (
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (vercelUrl ? `https://${vercelUrl}` : "http://localhost:3000")
+).replace(/\/$/, "");
 
 /**
  * Guard against the classic production mistake of shipping the localhost URL: it is baked

@@ -2,7 +2,8 @@
 // Run `npm run db:migrate` to create migrations, `npm run db:seed` to seed.
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x", "debian-openssl-3.0.x"]
 }
 
 datasource db {

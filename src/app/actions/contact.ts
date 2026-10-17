@@ -85,7 +85,7 @@ export async function submitContact(_prev: ContactState, formData: FormData): Pr
     };
 
     // Send email notifications AFTER the response is flushed (Next.js `after`), so the
-    // visitor never waits on Brevo while delivery is still guaranteed to be attempted.
+    // visitor never waits on SMTP delivery while delivery is still guaranteed to be attempted.
     after(async () => {
       await Promise.all([
         sendContactNotification(emailData).catch((err) =>

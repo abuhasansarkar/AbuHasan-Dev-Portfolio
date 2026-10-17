@@ -1,39 +1,77 @@
 import "server-only";
 
-import { BrevoClient } from "@getbrevo/brevo";
+import nodemailer, { type Transporter } from "nodemailer";
 
 /**
- * Brevo email client configuration
- * Uses the Brevo API v3 SDK for sending transactional emails.
- * The API key is a server-only secret – never import this module from a client component.
+ * Gmail SMTP email client configuration with Nodemailer.
+ *
+ * For Gmail SMTP:
+ * 1. Enable 2-Step Verification in your Google Account.
+ * 2. Generate an App Password at: https://myaccount.google.com/apppasswords
+ * 3. Set GMAIL_USER (your Gmail address, e.g. abuhasansarkar2@gmail.com)
+ * 4. Set GMAIL_APP_PASSWORD (the 16-character app password)
+ *
+ * Backward-compatible fallbacks for SMTP_USER/SMTP_PASS and BREVO_SENDER_EMAIL are included.
  */
-const brevoApiKey = process.env.BREVO_API_KEY;
-/**
- * Verified Brevo sender (SPF/DKIM must be configured for the domain – see .env.example).
- * No hardcoded fallback: if this is missing, sending stays disabled rather than risking
- * emails bouncing from an unverified address.
- */
-const senderEmail = process.env.BREVO_SENDER_EMAIL || "";
-const senderName = process.env.BREVO_SENDER_NAME || "AbuHasan Portfolio";
+const gmailUser =
+  process.env.GMAIL_USER ||
+  process.env.SMTP_USER ||
+  process.env.BREVO_SENDER_EMAIL ||
+  "";
 
-let brevoClient: BrevoClient | null = null;
+const gmailPass =
+  process.env.GMAIL_APP_PASSWORD ||
+  process.env.SMTP_PASS ||
+  process.env.GMAIL_PASS ||
+  "";
 
-function getBrevoClient(): BrevoClient | null {
-  if (!brevoApiKey) {
-    console.warn("[email] BREVO_API_KEY not configured - email notifications disabled");
+const senderName =
+  process.env.SMTP_SENDER_NAME ||
+  process.env.BREVO_SENDER_NAME ||
+  "AbuHasan Portfolio";
+
+const receiverEmail =
+  process.env.NOTIFICATION_RECEIVER_EMAIL ||
+  gmailUser ||
+  "abuhasansarkar2@gmail.com";
+
+let transporter: Transporter | null = null;
+
+function getEmailTransporter(): Transporter | null {
+  if (!gmailUser || !gmailPass) {
+    console.warn(
+      "[email] Gmail SMTP not configured (missing GMAIL_USER or GMAIL_APP_PASSWORD / SMTP_PASS) - email notifications disabled"
+    );
     return null;
   }
 
-  if (!senderEmail) {
-    console.warn("[email] BREVO_SENDER_EMAIL not configured - email notifications disabled");
-    return null;
+  if (!transporter) {
+    const host = process.env.SMTP_HOST;
+    const port = process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : undefined;
+    const secure = process.env.SMTP_SECURE === "true" || port === 465;
+
+    if (host) {
+      transporter = nodemailer.createTransport({
+        host,
+        port: port ?? 587,
+        secure: secure ?? false,
+        auth: {
+          user: gmailUser,
+          pass: gmailPass,
+        },
+      });
+    } else {
+      transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: gmailUser,
+          pass: gmailPass,
+        },
+      });
+    }
   }
 
-  if (!brevoClient) {
-    brevoClient = new BrevoClient({ apiKey: brevoApiKey });
-  }
-
-  return brevoClient;
+  return transporter;
 }
 
 interface ContactFormData {
@@ -47,17 +85,28 @@ interface ContactFormData {
   message: string;
 }
 
+function getSiteUrl(): string {
+  return (
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000")
+  ).replace(/\/$/, "");
+}
+
 /**
- * Send contact form notification email via Brevo
+ * Send contact form notification email to admin via Gmail SMTP (Nodemailer)
  */
-export async function sendContactNotification(data: ContactFormData): Promise<{ success: boolean; error?: string }> {
-  const client = getBrevoClient();
-  
-  if (!client) {
-    return { success: false, error: "Brevo not configured" };
+export async function sendContactNotification(
+  data: ContactFormData
+): Promise<{ success: boolean; error?: string }> {
+  const transport = getEmailTransporter();
+
+  if (!transport) {
+    return { success: false, error: "Email transporter not configured" };
   }
 
   try {
+    const siteUrl = getSiteUrl();
+
     const htmlContent = `
       <!DOCTYPE html>
       <html>
@@ -120,7 +169,7 @@ export async function sendContactNotification(data: ContactFormData): Promise<{ 
           </div>
 
           <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center;">
-            <a href="${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/admin/submissions" 
+            <a href="${siteUrl}/admin/submissions" 
                style="display: inline-block; background: #2563eb; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px;">
               View in Admin Dashboard
             </a>
@@ -151,43 +200,45 @@ Message:
 ${data.message}
 
 ---
-View in Admin Dashboard: ${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/admin/submissions
+View in Admin Dashboard: ${siteUrl}/admin/submissions
 Reply directly to this email to respond to ${data.name}.
     `.trim();
 
-    const sendSmtpEmail = {
+    await transport.sendMail({
+      from: `"${senderName}" <${gmailUser}>`,
+      to: receiverEmail,
+      replyTo: `"${data.name}" <${data.email}>`,
       subject: `New Contact: ${data.name} - ${data.projectType}`,
-      htmlContent: htmlContent,
-      textContent: textContent,
-      sender: { email: senderEmail, name: senderName },
-      to: [{ email: senderEmail, name: "AbuHasan" }],
-      replyTo: { email: data.email, name: data.name },
-    };
+      text: textContent,
+      html: htmlContent,
+    });
 
-    await client.transactionalEmails.sendTransacEmail(sendSmtpEmail);
-    
-    console.log("[email] Contact notification sent successfully");
+    console.log("[email] Contact notification sent successfully via Gmail SMTP");
     return { success: true };
   } catch (error) {
     console.error("[email] Failed to send contact notification:", error);
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : "Unknown error" 
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }
 
 /**
- * Send auto-reply confirmation to the person who submitted the form
+ * Send auto-reply confirmation to the person who submitted the form via Gmail SMTP (Nodemailer)
  */
-export async function sendContactAutoReply(data: ContactFormData): Promise<{ success: boolean; error?: string }> {
-  const client = getBrevoClient();
-  
-  if (!client) {
-    return { success: false, error: "Brevo not configured" };
+export async function sendContactAutoReply(
+  data: ContactFormData
+): Promise<{ success: boolean; error?: string }> {
+  const transport = getEmailTransporter();
+
+  if (!transport) {
+    return { success: false, error: "Email transporter not configured" };
   }
 
   try {
+    const siteUrl = getSiteUrl();
+
     const htmlContent = `
       <!DOCTYPE html>
       <html>
@@ -215,14 +266,14 @@ export async function sendContactAutoReply(data: ContactFormData): Promise<{ suc
             </ul>
           </div>
 
-          <p style="font-size: 14px; color: #4b5563;">In the meantime, feel free to check out my <a href="${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/#work" style="color: #2563eb;">recent work</a> or <a href="${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/#blog" style="color: #2563eb;">blog articles</a>.</p>
+          <p style="font-size: 14px; color: #4b5563;">In the meantime, feel free to check out my <a href="${siteUrl}/#work" style="color: #2563eb;">recent work</a> or <a href="${siteUrl}/#blog" style="color: #2563eb;">blog articles</a>.</p>
 
           <p style="font-size: 14px; color: #4b5563;">Best regards,<br><strong>Abu Hasan Sarkar</strong><br>Full-Stack Web Developer & WordPress Specialist</p>
         </div>
 
         <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #9ca3af;">
           <p>This is an automated confirmation. Please don't reply to this email directly.</p>
-          <p>If you have urgent questions, email me at <a href="mailto:abuhasansarkar2@gmail.com" style="color: #2563eb;">abuhasansarkar2@gmail.com</a></p>
+          <p>If you have urgent questions, email me at <a href="mailto:${escapeHtml(receiverEmail)}" style="color: #2563eb;">${escapeHtml(receiverEmail)}</a></p>
         </div>
       </body>
       </html>
@@ -238,7 +289,7 @@ What happens next?
 - I'll reply to this email with my thoughts and next steps
 - If we're a good fit, we can schedule a quick discovery call
 
-In the meantime, feel free to check out my work at ${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/#work
+In the meantime, feel free to check out my work at ${siteUrl}/#work
 
 Best regards,
 Abu Hasan Sarkar
@@ -246,35 +297,34 @@ Full-Stack Web Developer & WordPress Specialist
 
 ---
 This is an automated confirmation. Please don't reply to this email directly.
-If you have urgent questions, email me at abuhasansarkar2@gmail.com
+If you have urgent questions, email me at ${receiverEmail}
     `.trim();
 
-    const sendSmtpEmail = {
+    await transport.sendMail({
+      from: `"${senderName}" <${gmailUser}>`,
+      to: `"${data.name}" <${data.email}>`,
+      replyTo: receiverEmail,
       subject: `Thanks for contacting me, ${data.name}!`,
-      htmlContent: htmlContent,
-      textContent: textContent,
-      sender: { email: senderEmail, name: senderName },
-      to: [{ email: data.email, name: data.name }],
-    };
+      text: textContent,
+      html: htmlContent,
+    });
 
-    await client.transactionalEmails.sendTransacEmail(sendSmtpEmail);
-    
-    console.log("[email] Auto-reply sent successfully");
+    console.log("[email] Auto-reply sent successfully via Gmail SMTP");
     return { success: true };
   } catch (error) {
     console.error("[email] Failed to send auto-reply:", error);
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : "Unknown error" 
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }
 
 function escapeHtml(text: string): string {
   return text
-    .replace(/&/g, "\u0026amp;")
-    .replace(/</g, "\u0026lt;")
-    .replace(/>/g, "\u0026gt;")
-    .replace(/"/g, "\u0026quot;")
-    .replace(/'/g, "\u0026#039;");
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
